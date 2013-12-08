@@ -16,14 +16,45 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	builder = function builder(result, options, insert) {
 		
 		var i, html = '';
-		
-		html = '<ul>';
 
-		for (i = 0; i < result.length; i++) {
-			html += '<li>' + this.add_link(result[i].url, {'name': result[i].title, 'return': 'string'}) + '</li>';
+		if (typeof options !== 'object') {
+			options = {};
+		} else {
+			// clone the options object
+			options = JSON.parse(JSON.stringify(options));
 		}
 
-		html += '</ul>';
+		if (!options.level) options.level = 0;
+		options.level++;
+		
+		if (options.level == 1) {
+			html = options.rootOpen || '';
+		} else {
+			html = options.childrenOpen || '';
+		}
+
+		// @todo: implement children & section opens
+
+		for (i = 0; i < result.length; i++) {
+
+			html += options.singleOpen || '';
+
+			html += this.add_link(result[i].url, {
+				'prepend': result[i].contentPrepend,
+				'append': result[i].contentAppend,
+				'name': result[i].title,
+				'return': 'string',
+				match: {'class': 'active', parent: {'class': 'active'}}
+			});
+
+			html += options.singleClose || '';
+		}
+
+		if (options.level == 1) {
+			html += options.rootClose || '';
+		} else {
+			html += options.childrenClose || '';
+		}
 
 		insert(html);
 	};
@@ -42,7 +73,9 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 		console.log('Getting menu');
 
-		if (typeof options !== 'object') options = {};
+		if (typeof options !== 'object') {
+			options = {};
+		}
 
 		var that = this,
 		    req  = this.hawkejs.req,
