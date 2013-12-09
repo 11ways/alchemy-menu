@@ -122,6 +122,10 @@ Model.extend(function MenuModel (){
 							parent.children.push(entry);
 						}
 					}
+
+					if (!entry.title && !entry.href) {
+						delete result[id];
+					}
 				}
 
 				// Now remove all the entries with a parent from the root
@@ -138,6 +142,9 @@ Model.extend(function MenuModel (){
 					if (!entry.parent) {
 						menu.push(entry);
 					}
+
+					// We can also remove the parent property now
+					delete entry.parent;
 				}
 
 				if (callback) callback(err, menu);

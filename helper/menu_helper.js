@@ -15,7 +15,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 */
 	builder = function builder(result, options, insert) {
 		
-		var i, html = '';
+		var i, html = '', entry;
 
 		if (typeof options !== 'object') {
 			options = {};
@@ -37,17 +37,42 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 		for (i = 0; i < result.length; i++) {
 
-			html += options.singleOpen || '';
+			entry = result[i];
 
-			html += this.add_link(result[i].url, {
-				'prepend': result[i].contentPrepend,
-				'append': result[i].contentAppend,
-				'name': result[i].title,
+			if (!entry.contentPrepend) {
+				entry.contentPrepend = '<span>';
+
+				if (entry.icon) {
+					entry.contentPrepend += '<i class="fa fa-' + entry.icon + '"></i> ';
+				}
+			}
+
+			if (!entry.contentAppend) {
+				entry.contentAppend = '</span>';
+			}
+
+			if (entry.children && entry.children.length) {
+				html += options.sectionOpen || '';
+			} else {
+				html += options.singleOpen || '';
+			}
+
+			html += this.add_link(entry.url, {
+				'prepend': entry.contentPrepend,
+				'append': entry.contentAppend,
+				'name': entry.title,
 				'return': 'string',
-				match: {'class': 'active', parent: {'class': 'active'}}
+				match: {'class': 'active', parent: {'class': 'active', parent: {parent: {'class': 'active open'}}}}
 			});
 
-			html += options.singleClose || '';
+			if (entry.children && entry.children.length) {
+
+				html += builder.call(this, entry.children, options);
+
+				html += options.sectionClose || '';
+			} else {
+				html += options.singleClose || '';
+			}
 		}
 
 		if (options.level == 1) {
@@ -56,7 +81,13 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 			html += options.childrenClose || '';
 		}
 
-		insert(html);
+		if (insert) {
+			insert(html);
+		}
+
+		if (options['return'] || !insert) {
+			return html;
+		}
 	};
 
 	/**
@@ -70,8 +101,6 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 * @param    {Object}    options      Extra options
 	 */
 	menu.get = function menu_get(menuName, options) {
-
-		console.log('Getting menu');
 
 		if (typeof options !== 'object') {
 			options = {};
