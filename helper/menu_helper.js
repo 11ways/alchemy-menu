@@ -62,7 +62,14 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 				'append': entry.contentAppend,
 				'name': entry.title,
 				'return': 'string',
-				match: {'class': 'active', parent: {'class': 'active', parent: {parent: {'class': 'active open'}}}}
+				match: {
+					greedy: entry.greedy,
+					'class': 'active',
+					parent: {
+						'class': 'active',
+						parent: {
+							parent: {
+								'class': 'active open'}}}}
 			});
 
 			if (entry.children && entry.children.length) {
