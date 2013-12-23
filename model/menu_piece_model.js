@@ -14,9 +14,12 @@ Model.extend(function MenuPieceModel (){
 	this.preInit = function preInit() {
 		this.parent();
 
-		// this.behaviours = {
-		// 	//'Translate': {}
-		// };
+		this.hasOneParent = {
+			Menu: {
+				modelName: 'Menu',
+				foreignKey: 'menu_id'
+			}
+		};
 		
 		this.blueprint = {
 			menu_id  : 'ObjectId',
