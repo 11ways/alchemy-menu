@@ -29,6 +29,95 @@ Model.extend(function MenuModel (){
 	};
 
 	/**
+	 * Get the menu source
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 *
+	 * @param    {String}   menuId    The id of the wanted menu
+	 * @param    {Function} callback
+	 */
+	this.getSource = function getSource(menuId, callback) {
+
+		this.find('first', {conditions: {'Menu._id': menuId}}, function (err, recordData) {
+
+			var resultArray = [],
+			    results     = {},
+			    filtered,
+			    settings,
+			    piece,
+			    i;
+
+			// Conform all the pieces
+			for (i = 0; i < recordData.MenuPiece.length; i++) {
+
+				piece = recordData.MenuPiece[i];
+				
+				settings = piece.settings || {};
+
+				results[piece._id] = {
+					id: piece._id,
+					settings: settings,
+					translatable_settings: piece.translatable_settings || {},
+					type: piece.type,
+					order: settings.order || 5,
+					suborder: i,
+					parent: settings.parent || null,
+					children: []
+				};
+
+				// Also add it to the array to be sorted
+				resultArray.push(results[piece._id]);
+			}
+
+			// Sort all the items
+			resultArray.sort(function(a, b) {
+
+				// Order is weighted (highest goes higher)
+				if (a.order > b.order) {
+					return -1;
+				} else if (a.order < b.order) {
+					return 1;
+				} else {
+					// Suborder is reversed (smallest goes higher)
+					if (a.suborder > b.suborder) {
+						return 1;
+					} else if (a.suborder < b.suborder) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			});
+
+			// Tree-ify the results
+			for (i = 0; i < resultArray.length; i++) {
+				piece = resultArray[i];
+
+				if (piece.parent) {
+					if (results[piece.parent]) {
+						results[piece.parent].children.push(piece);
+					} else {
+						piece.parent = false;
+					}
+				}
+			}
+
+			// Remove the items with parents from the root
+			filtered = resultArray.filter(function(element) {
+				if (element.parent) {
+					return false;
+				} else {
+					return true;
+				}
+			});
+
+			callback(err, filtered);
+		});
+	};
+
+	/**
 	 * Get a menu by its name
 	 *
 	 * @author   Jelle De Loecker   <jelle@codedor.be>
@@ -47,8 +136,6 @@ Model.extend(function MenuModel (){
 				'Menu.name': menuName
 			}
 		}, function(err, result) {
-
-			pr(result, true)
 
 			var menu, piece, i, tasks = {};
 
@@ -166,4 +253,10 @@ Resource.register('menu', function(data, callback) {
 	this.getModel('Menu').get(data.name, function(err, result) {
 		callback(result);
 	});
+});
+
+Resource.register('menuSource', function(data, callback) {
+	this.getModel('Menu').getSource(data.id, function(err, result) {
+		callback(result);
+	})
 });

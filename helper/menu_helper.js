@@ -4,7 +4,8 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	var helpers = hawkejs.helpers,
 	    menu    = helpers.menu = {},
 	    cache   = {},
-	    builder;
+	    builder,
+	    nestableBuilder;
 
 	/**
 	 * Build the menu
@@ -152,6 +153,68 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 				builder.call(that, result, options, insert);
 			});
+		});
+	};
+
+	/**
+	 * Create the nestable html
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 */
+	nestableBuilder = function nestableBuilder(items) {
+
+		var item,
+		    html = '<div class="dd"><ol class="dd-list">',
+		    i;
+
+		for (i = 0; i < items.length; i++) {
+			item = items[i];
+
+			html += '<li class="dd-item" data-id="' + item.id + '">';
+			html += '<div class="dd-handle">' + item.type + '</div>';
+
+			if (item.children && item.children.length) {
+				html += nestableBuilder(item.children);
+			}
+
+			html += '</li>';
+		}
+
+		html += '</ol></div>';
+
+		return html;
+	};
+
+	/**
+	 * Create a nestable view of the menu
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 *
+	 * @param    {String}    menuId       The name of the menu
+	 * @param    {Object}    options      Extra options
+	 */
+	menu.nestable = function menu_nestable(menuId, options) {
+
+		var that = this,
+		    req  = this.hawkejs.req,
+		    ttl;
+
+		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
+		this.asset.style(['menu/nestable'], {block: 'head'});
+
+		// Push a placeholder into the generated view
+		this.async(function(insert) {
+
+			// Get the resource from the server
+			hawkejs.getResource('menuSource', {id: menuId, req: req}, function(result) {
+
+				insert(nestableBuilder(result));
+			});
+
 		});
 	};
 };
