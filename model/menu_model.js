@@ -29,6 +29,32 @@ Model.extend(function MenuModel (){
 	};
 
 	/**
+	 * Get the menu item type instance
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 */
+	this.getItemType = function getItemType(name) {
+		name = name.underscore();
+
+		if (this.itemTypes[name]) {
+			return this.itemTypes[name];
+		}
+	};
+
+	/**
+	 * Get all the available menu types
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 */
+	this.getTypes = function getTypes() {
+		
+	};
+
+	/**
 	 * Get the menu source
 	 *
 	 * @author   Jelle De Loecker   <jelle@codedor.be>
@@ -40,10 +66,14 @@ Model.extend(function MenuModel (){
 	 */
 	this.getSource = function getSource(menuId, callback) {
 
+		var that = this;
+
 		this.find('first', {conditions: {'Menu._id': menuId}}, function (err, recordData) {
 
 			var resultArray = [],
 			    results     = {},
+			    allowChildren,
+			    itemType,
 			    filtered,
 			    settings,
 			    piece,
@@ -53,8 +83,16 @@ Model.extend(function MenuModel (){
 			for (i = 0; i < recordData.MenuPiece.length; i++) {
 
 				piece = recordData.MenuPiece[i];
-				
 				settings = piece.settings || {};
+				itemType = that.getItemType(piece.type);
+
+				console.log(itemType)
+
+				if (itemType) {
+					allowChildren = itemType.allowChildren;
+				} else {
+					allowChildren = true;
+				}
 
 				results[piece._id] = {
 					id: piece._id,
@@ -64,6 +102,7 @@ Model.extend(function MenuModel (){
 					order: settings.order || 5,
 					suborder: i,
 					parent: settings.parent || null,
+					allowChildren: allowChildren,
 					children: []
 				};
 
@@ -253,10 +292,4 @@ Resource.register('menu', function(data, callback) {
 	this.getModel('Menu').get(data.name, function(err, result) {
 		callback(result);
 	});
-});
-
-Resource.register('menuSource', function(data, callback) {
-	this.getModel('Menu').getSource(data.id, function(err, result) {
-		callback(result);
-	})
 });

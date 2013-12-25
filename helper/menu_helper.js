@@ -5,6 +5,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	    menu    = helpers.menu = {},
 	    cache   = {},
 	    builder,
+	    nestableMenuBuilder,
 	    nestableBuilder;
 
 	/**
@@ -163,17 +164,25 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 * @since    0.0.1
 	 * @version  0.0.1
 	 */
-	nestableBuilder = function nestableBuilder(items) {
+	nestableMenuBuilder = function nestableMenuBuilder(items) {
 
 		var item,
-		    html = '<div class="dd"><ol class="dd-list">',
+		    classes,
+		    html = '<div class="dd" id="nestable-menu"><ol class="dd-list">',
 		    i;
 
 		for (i = 0; i < items.length; i++) {
 			item = items[i];
 
-			html += '<li class="dd-item" data-id="' + item.id + '">';
-			html += '<div class="dd-handle">' + item.type + '</div>';
+			if (item.allowChildren) {
+				classes = '';
+			} else {
+				classes = 'dd-nochildren';
+			}
+
+			html += '<li class="dd-item ' + classes + '" data-id="' + item.id + '">';
+			html += '<div class="dd3-config"><i class="fa fa-wrench"></i></div>';
+			html += '<div class="dd-handle dd3-content">' + item.type + '</div>';
 
 			if (item.children && item.children.length) {
 				html += nestableBuilder(item.children);
@@ -183,6 +192,127 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		}
 
 		html += '</ol></div>';
+
+		// Create the clone source
+		html += '<div id="nestable-source" class="dd dd-clonesource dd-nodrop"><ol class="dd-list">';
+		html += '<li class="dd-item dd-nochildren" data-id="new">';
+		html += '<div class="dd3-config"><i class="fa fa-wrench"></i></div>';
+		html += '<div class="dd-handle dd3-content">Test</div>';
+		html += '</li>';
+		html += '</ol></div>';
+
+
+		html += '<script>$("#nestable-menu").nestable();$(".dd-clonesource").nestable({cloneSource: true});</script>';
+
+		return html;
+	};
+
+	/**
+	 * Create nestable html
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 *
+	 * @param    {Array}     items        The items
+	 * @param    {Object}    options      Extra options
+	 */
+	nestableBuilder = function nestableBuilder(items, options) {
+
+		var html = '',
+		    subOptions,
+		    classes,
+		    item,
+		    i;
+
+		if (!options) {
+			options = {};
+		}
+
+		// What property to use for the li title?
+		if (!options.lititle) {
+			options.lititle = 'title';
+		}
+
+		// Add the wrapping div if these are not children
+		if (!options.children) {
+
+			// Create an id
+			if (!options.id) {
+				options.id = Date.now() + '-' + (~~(Math.random()*1000));
+			}
+
+			// Open the div and add css classes
+			html += '<div class="dd';
+
+			if (options['classes']) {
+				html += ' ' + options['classes'];
+			}
+
+			html += '"';
+
+			// Add the id if needed
+			html += ' id="' + options.id + '"';
+
+			// Finish the wrapping div
+			html += '>';
+		}
+
+		// Finish the opening tag + add the ol tag
+		html += '<ol class="dd-list">';
+
+		// Start adding the children
+		for (i = 0; i < items.length; i++) {
+			item = items[i];
+
+			if (item.allowChildren) {
+				classes = '';
+			} else {
+				classes = 'dd-nochildren';
+			}
+
+			if (options.liclasses) {
+				classes += ' ' + options.liclasses;
+			}
+
+			html += '<li class="dd-item ' + classes + '" data-id="' + item.id + '">';
+
+			if (typeof options.liicon !== 'undefined') {
+				html += '<div class="dd3-config"><i class="fa fa-' + options.liicon + '"></i></div>';
+				html += '<div class="dd-handle dd3-content">' + item[options.lititle] + '</div>';
+			} else {
+				html += '<div class="dd-handle">' + item[options.lititle] + '</div>';
+			}
+
+			if (item.children && item.children.length) {
+
+				// Clone the options object
+				subOptions = JSON.parse(JSON.stringify(options));
+
+				// Indicate this is a children nestable menu
+				subOptions.children = true;
+
+				html += nestableBuilder(item.children, subOptions);
+			}
+
+			html += '</li>';
+			
+		}
+
+		// Close the ordered list
+		html += '</ol>';
+
+		// If these are not children, close the wrapping div
+		if (!options.children) {
+			html += '</div>';
+
+			if (!options.config) {
+				options.config = {};
+			}
+
+			// Add the constructing script
+			html += '<script>$("#' + options.id + '").nestable(' + JSON.stringify(options.config) + ');</script>';
+		}
 
 		return html;
 	};
@@ -194,10 +324,9 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 * @since    0.0.1
 	 * @version  0.0.1
 	 *
-	 * @param    {String}    menuId       The name of the menu
 	 * @param    {Object}    options      Extra options
 	 */
-	menu.nestable = function menu_nestable(menuId, options) {
+	menu.nestable = function menu_nestable(options) {
 
 		var that = this,
 		    req  = this.hawkejs.req,
@@ -206,15 +335,33 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
 		this.asset.style(['menu/nestable'], {block: 'head'});
 
-		// Push a placeholder into the generated view
-		this.async(function(insert) {
+		this.echo(nestableBuilder(this.menuSource, {
+			id: 'nestable-menu-editor',
+			lititle: 'type',
+			liicon: 'wrench'
+		}));
+	};
 
-			// Get the resource from the server
-			hawkejs.getResource('menuSource', {id: menuId, req: req}, function(result) {
+	/**
+	 * Create the nestable source items
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  0.0.1
+	 *
+	 * @param    {Object}    options      Extra options
+	 */
+	menu.nestableSource = function menu_nestable_source(options) {
 
-				insert(nestableBuilder(result));
-			});
+		return;
 
-		});
+		var that = this,
+		    req  = this.hawkejs.req,
+		    ttl;
+
+		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
+		this.asset.style(['menu/nestable'], {block: 'head'});
+
+		nestableBuilder(this.menuSource);
 	};
 };
