@@ -105,54 +105,9 @@ Model.extend(function MenuModel (){
 					allowChildren: allowChildren,
 					children: []
 				};
-
-				// Also add it to the array to be sorted
-				resultArray.push(results[piece._id]);
 			}
 
-			// Sort all the items
-			resultArray.sort(function(a, b) {
-
-				// Order is weighted (highest goes higher)
-				if (a.order > b.order) {
-					return -1;
-				} else if (a.order < b.order) {
-					return 1;
-				} else {
-					// Suborder is reversed (smallest goes higher)
-					if (a.suborder > b.suborder) {
-						return 1;
-					} else if (a.suborder < b.suborder) {
-						return -1;
-					} else {
-						return 0;
-					}
-				}
-			});
-
-			// Tree-ify the results
-			for (i = 0; i < resultArray.length; i++) {
-				piece = resultArray[i];
-
-				if (piece.parent) {
-					if (results[piece.parent]) {
-						results[piece.parent].children.push(piece);
-					} else {
-						piece.parent = false;
-					}
-				}
-			}
-
-			// Remove the items with parents from the root
-			filtered = resultArray.filter(function(element) {
-				if (element.parent) {
-					return false;
-				} else {
-					return true;
-				}
-			});
-
-			callback(err, filtered);
+			callback(err, results);
 		});
 	};
 

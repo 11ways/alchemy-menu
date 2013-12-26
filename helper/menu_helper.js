@@ -202,7 +202,8 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		html += '</ol></div>';
 
 
-		html += '<script>$("#nestable-menu").nestable();$(".dd-clonesource").nestable({cloneSource: true});</script>';
+		html += '<script>$("#nestable-menu").nestable({dropCallback: ' + String(dropCallback) + '});';
+		html += '$(".dd-clonesource").nestable({cloneSource: true});</script>';
 
 		return html;
 	};
@@ -214,19 +215,37 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 * @since    0.0.1
 	 * @version  0.0.1
 	 *
-	 * @param    {Array}     items        The items
+	 * @param    {Object}     items       The items object
 	 * @param    {Object}    options      Extra options
 	 */
 	nestableBuilder = function nestableBuilder(items, options) {
 
 		var html = '',
+		    obj  = items,
 		    subOptions,
 		    classes,
 		    item,
 		    i;
 
+		// Create an ordered array out of the object
+		items = hawkejs.order(items, {subOrder: 'ASC'});
+		items = hawkejs.treeify(items);
+
 		if (!options) {
 			options = {};
+		}
+
+		if (!options.children) {
+
+			if (!options.config) {
+				options.config = {};
+			}
+
+			if (!options.config.dropCallback) {
+				options.config.dropCallback = function dropCallback(item) {
+					console.log(item);
+				};
+			}
 		}
 
 		// What property to use for the li title?
@@ -306,12 +325,8 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		if (!options.children) {
 			html += '</div>';
 
-			if (!options.config) {
-				options.config = {};
-			}
-
 			// Add the constructing script
-			html += '<script>$("#' + options.id + '").nestable(' + JSON.stringify(options.config) + ');</script>';
+			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.stringify(options.config, true) + ');</script>';
 		}
 
 		return html;

@@ -42,16 +42,16 @@ start(store('chimera-view-setting').contentblock) %>
 <script>
 $('#nestable-menu-editor .dd3-config').click(function(e) {
 	var $this = $(this),
-        $li   = $this.parents('li'),
-        id    = $li.attr('data-id'),
-        url   = <% echo(JSON.stringify(pieceUrl)) %>;
+	    $li   = $this.parents('li'),
+	    id    = $li.attr('data-id'),
+	    url   = <% echo(JSON.stringify(pieceUrl)) %>;
 
-    url = hawkejs.fillParam(url, {pieceid: id});
+	url = hawkejs.fillParam(url, {pieceid: id});
 
-    // Call up the configure url
-    hawkejs.goToAjaxView(url, undefined, undefined, function(payload){
-    	console.log('Loaded & rendered menu piece config url')
-    });
+	// Call up the configure url
+	hawkejs.goToAjaxView(url, undefined, undefined, function(payload){
+		console.log('Loaded & rendered menu piece config url')
+	});
 
 });
 </script>
