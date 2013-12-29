@@ -1,13 +1,18 @@
 <%
 expands('chimera/menu_manager');
 
-start('tempeditor') %>
-TEST
-<pre>
-<% echo(JSON.stringify(piece, undefined, 2)) %>
-</pre>
+start('tempeditor')
 
-<pre>
-<% echo(JSON.stringify(blueprint, undefined, 2)) %>
-</pre>
-<% end('tempeditor') %>
+var options = {};
+options.groups = __groups;
+
+if (typeof showSaveButton !== 'undefined') {
+	options.showSaveButton = showSaveButton;
+}
+
+options.formName = 'MenuPiece';
+
+
+print_element('chimera/edit_form', {variables: {options: options}});
+
+end('tempeditor') %>

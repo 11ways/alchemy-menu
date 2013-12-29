@@ -29,17 +29,25 @@ Model.extend(function MenuModel (){
 	};
 
 	/**
-	 * Get the menu item type instance
+	 * Get the menu item type instance.
+	 * Returns the link type if nothing valid is found.
 	 *
 	 * @author   Jelle De Loecker   <jelle@codedor.be>
 	 * @since    0.0.1
 	 * @version  0.0.1
 	 */
 	this.getItemType = function getItemType(name) {
-		name = name.underscore();
+
+		if (!name) {
+			name = 'link'
+		} else {
+			name = name.underscore();
+		}
 
 		if (this.itemTypes[name]) {
 			return this.itemTypes[name];
+		} else {
+			return this.itemTypes['link'];
 		}
 	};
 

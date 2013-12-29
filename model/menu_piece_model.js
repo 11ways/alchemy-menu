@@ -24,11 +24,7 @@ Model.extend(function MenuPieceModel (){
 		this.blueprint = {
 			menu_id  : 'ObjectId',
 			type     : 'String',
-			settings : 'Object',
-			translatable_settings : {
-				type: 'Object',
-				translatable: true
-			}
+			settings : 'Object'
 		};
 	};
 

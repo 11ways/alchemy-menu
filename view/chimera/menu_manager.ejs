@@ -36,7 +36,22 @@ start(store('chimera-view-setting').contentblock) %>
 </div>
 
 <div id="tempeditor">
-<% assign('tempeditor') %>
+<div class="modal fade" id="myMenuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+			</div>
+			
+			<div class="modal-body">
+				<% assign('tempeditor') %>
+			</div>
+			<div class="modal-footer">
+
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
@@ -53,6 +68,11 @@ $('#nestable-menu-editor .dd3-config').click(function(e) {
 		console.log('Loaded & rendered menu piece config url')
 	});
 
+});
+
+// Show a modal when menu piece config data is loaded
+hawkejs.event.on({create: 'block', name: 'tempeditor'}, function(identifier, data) {
+	$('#tempeditor div.modal').modal();
 });
 </script>
 <% end(store('chimera-view-setting').contentblock) %>
