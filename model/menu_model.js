@@ -171,7 +171,7 @@ Model.extend(function MenuModel (){
 			// Process the data we get back from all the menu item types
 			async.parallel(tasks, function(err, result) {
 
-				var id, cid, entry, centry, parent, menu = [];
+				var id, cid, entry, centry, parent, menu = [], tree;
 
 				// First merge all the pieces containing multiple entries
 				for (id in result) {
@@ -191,33 +191,22 @@ Model.extend(function MenuModel (){
 					}
 				}
 
-				// Turn the entries into a tree
+				// Remove entries without a title and link
 				for (id in result) {
 					entry = result[id];
-
-					if (entry.parent) {
-
-						// Get the parent item
-						parent = result[entry.parent];
-
-						// If the parent item actually exists
-						if (parent) {
-
-							// Create a children array if it doesn't exist
-							if (!parent.children) {
-								parent.children = [];
-							}
-
-							parent.children.push(entry);
-						}
-					}
 
 					if (!entry.title && !entry.href) {
 						delete result[id];
 					}
 				}
 
-				// Now remove all the entries with a parent from the root
+				// Turn the result into a tree
+				tree = alchemy.hawkejs.treeify(result, {type: 'array', childrenType: 'array'});
+
+				// Order the tree and its children
+				menu = alchemy.hawkejs.order(tree, {children: 'children', mainOrder: 'ASC'});
+
+				// Go over all the items again (in result) and remove certain properties
 				for (id in result) {
 					entry = result[id];
 
@@ -226,11 +215,6 @@ Model.extend(function MenuModel (){
 					delete entry._id;
 					delete entry.updated;
 					delete entry.created;
-
-					// If this entry does not have a parent, add it to the root of the menu
-					if (!entry.parent) {
-						menu.push(entry);
-					}
 
 					// We can also remove the parent property now
 					delete entry.parent;
