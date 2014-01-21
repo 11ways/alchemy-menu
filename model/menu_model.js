@@ -87,6 +87,8 @@ Model.extend(function MenuModel (){
 			    piece,
 			    i;
 
+			recordData = recordData[0];
+
 			// Conform all the pieces
 			for (i = 0; i < recordData.MenuPiece.length; i++) {
 
@@ -141,7 +143,8 @@ Model.extend(function MenuModel (){
 
 			var menu, piece, i, tasks = {};
 
-			if (result) {
+			if (result.length) {
+				result = result[0];
 				menu = result.Menu;
 
 				for (i = 0; i < result.MenuPiece.length; i++) {
