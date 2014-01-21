@@ -13,25 +13,31 @@ start('chimera-page-title'); -%>
 
 start(store('chimera-view-setting').contentblock) %>
 
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<div class="panel-title">
-			Menu
+<div class="row menu-manager">
+	<div class="col-md-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="panel-title">
+					Available items
+				</div>
+			</div>
+			<div class="panel-body">
+				<% menu.nestableSource(); %>
+			</div>
 		</div>
 	</div>
-	<div class="panel-body">
-		<% menu.nestable(); %>
-	</div>
-</div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<div class="panel-title">
-			Available items
+	<div class="col-md-9">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="panel-title">
+					Menu
+				</div>
+			</div>
+			<div class="panel-body">
+				<% menu.nestable(); %>
+			</div>
 		</div>
-	</div>
-	<div class="panel-body">
-		<% menu.nestableSource(); %>
 	</div>
 </div>
 

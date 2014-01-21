@@ -47,6 +47,7 @@ Model.extend(function MenuModel (){
 		if (this.itemTypes[name]) {
 			return this.itemTypes[name];
 		} else {
+			// Return the link item type by default
 			return this.itemTypes['link'];
 		}
 	};
@@ -96,8 +97,6 @@ Model.extend(function MenuModel (){
 				settings = piece.settings || {};
 				itemType = that.getItemType(piece.type);
 
-				console.log(itemType)
-
 				if (itemType) {
 					allowChildren = itemType.allowChildren;
 				} else {
@@ -109,6 +108,7 @@ Model.extend(function MenuModel (){
 					settings: settings,
 					translatable_settings: piece.translatable_settings || {},
 					type: piece.type,
+					title: itemType.getPieceTitle(piece),
 					order: settings.order || 5,
 					suborder: i,
 					parent: settings.parent || null,

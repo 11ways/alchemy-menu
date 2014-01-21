@@ -326,7 +326,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 			html += '</div>';
 
 			// Add the constructing script
-			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.stringify(options.config, true) + ');</script>';
+			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.stringify(options.config) + ');</script>';
 		}
 
 		return html;
@@ -350,9 +350,11 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
 		this.asset.style(['menu/nestable'], {block: 'head'});
 
+		pr(this.menuSource);
+
 		this.echo(nestableBuilder(this.menuSource, {
 			id: 'nestable-menu-editor',
-			lititle: 'type',
+			lititle: 'title',
 			liicon: 'wrench'
 		}));
 	};
@@ -368,8 +370,6 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	 */
 	menu.nestableSource = function menu_nestable_source(options) {
 
-		return;
-
 		var that = this,
 		    req  = this.hawkejs.req,
 		    ttl;
@@ -377,6 +377,10 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
 		this.asset.style(['menu/nestable'], {block: 'head'});
 
-		nestableBuilder(this.menuSource);
+		this.echo(nestableBuilder(this.MenuItemTypes, {
+			liicon: 'wrench',
+			classes: 'dd-clonesource dd-nodrop',
+			config: {cloneSource: true}
+		}));
 	};
 };
