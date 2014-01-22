@@ -61,13 +61,18 @@ start(store('chimera-view-setting').contentblock) %>
 </div>
 
 <script>
+(function() {
+
+var baseUrl = <% echo(JSON.stringify(pieceUrl)) %>,
+    menuId  = <% echo(JSON.stringify(menuId)) %>;
+
 $('#nestable-menu-editor .dd3-config').click(function(e) {
 	var $this = $(this),
 	    $li   = $this.parents('li'),
 	    id    = $li.attr('data-id'),
-	    url   = <% echo(JSON.stringify(pieceUrl)) %>;
+	    url;
 
-	url = hawkejs.fillParam(url, {pieceid: id});
+	url = hawkejs.fillParam(baseUrl, {pieceid: id});
 
 	// Call up the configure url
 	hawkejs.goToAjaxView(url, undefined, undefined, function(payload){
@@ -80,5 +85,41 @@ $('#nestable-menu-editor .dd3-config').click(function(e) {
 hawkejs.event.on({create: 'block', name: 'tempeditor'}, function(identifier, data) {
 	$('#tempeditor div.modal').modal();
 });
+
+hawkejs.event.on('menu-manager-drop', function(identifier, item) {
+
+	var url  = hawkejs.fillParam(baseUrl, {pieceid: item.sourceId}),
+	    data = {},
+	    items,
+	    piece,
+	    i;
+
+	items = $(item.destRoot).nestable('serialize');
+
+	for (i = 0; i < items.length; i++) {
+
+		piece = items[i];
+		url = hawkejs.fillParam(baseUrl, {pieceid: piece.id});
+
+		data.ModelEditorField = {
+			order: items.length - i
+		};
+
+		if (String(piece.id).isObjectId()) {
+			// @todo: save them all in one request, not piece by piece
+			$.post(url, {data: data});
+		} else {
+
+			hawkejs.goToAjaxView(url, undefined, {menuId: menuId, create: true, data: data}, function(payload) {
+
+				pr('Added new menu piece');
+				pr(payload);
+				pr(item);
+			});
+		}
+	}
+
+});
+}());
 </script>
 <% end(store('chimera-view-setting').contentblock) %>

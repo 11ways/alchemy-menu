@@ -225,6 +225,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		    subOptions,
 		    classes,
 		    item,
+		    cb,
 		    i;
 
 		// Create an ordered array out of the object
@@ -243,7 +244,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 			if (!options.config.dropCallback) {
 				options.config.dropCallback = function dropCallback(item) {
-					console.log(item);
+					hawkejs.event.emit('menu-manager-drop', item);
 				};
 			}
 		}
@@ -326,7 +327,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 			html += '</div>';
 
 			// Add the constructing script
-			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.stringify(options.config) + ');</script>';
+			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.uneval(options.config) + ');</script>';
 		}
 
 		return html;
@@ -349,8 +350,6 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 		this.asset.script(['menu/jquery.nestable'], {block: 'head'});
 		this.asset.style(['menu/nestable'], {block: 'head'});
-
-		pr(this.menuSource);
 
 		this.echo(nestableBuilder(this.menuSource, {
 			id: 'nestable-menu-editor',

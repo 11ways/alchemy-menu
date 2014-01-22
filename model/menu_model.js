@@ -178,7 +178,14 @@ Model.extend(function MenuModel (){
 
 				// First merge all the pieces containing multiple entries
 				for (id in result) {
+
 					entry = result[id];
+
+					// If the entry is invalid, continue
+					if (!entry) {
+						delete result[id];
+						continue;
+					}
 
 					// If this entry actually contains multiple entries
 					// add them to the object
@@ -207,7 +214,7 @@ Model.extend(function MenuModel (){
 				tree = alchemy.hawkejs.treeify(result, {type: 'array', childrenType: 'array'});
 
 				// Order the tree and its children
-				menu = alchemy.hawkejs.order(tree, {children: 'children', mainOrder: 'ASC'});
+				menu = alchemy.hawkejs.order(tree, {children: 'children'});
 
 				// Go over all the items again (in result) and remove certain properties
 				for (id in result) {
