@@ -11,7 +11,16 @@
 
 .dd-item,
 .dd-empty,
-.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-placeholder {
+	.user-select(none);
+	display: block;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	min-height: 20px;
+	font-size: 13px;
+	line-height: 20px;
+}
 
 .dd-handle { display: block; height: 30px; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
 	background: #fafafa;
@@ -124,12 +133,11 @@
 .dd3-handle:before { content: '≡'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
 .dd3-handle:hover { background: #ddd; }
 
-.dd3-config {
+.dd3-base-config {
 	.user-select(none);
 	padding: 3px 0 0 8px;
 	position: absolute;
 	margin: 0;
-	left: 0;
 	top: 0;
 	cursor: pointer;
 	width: 30px;
@@ -142,6 +150,11 @@
 	background:         linear-gradient(top, #ddd 0%, #bbb 100%);
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
+}
+
+.dd3-config {
+	.dd3-base-config;
+	left: 0;
 }
 
 .dd3-config:hover i {
@@ -157,4 +170,9 @@
 	.dd {
 		width: 100%;
 	}
+}
+
+.dd3-extra {
+	.dd3-base-config;
+	right: 0;
 }

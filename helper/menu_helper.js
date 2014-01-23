@@ -226,17 +226,19 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		    classes,
 		    item,
 		    cb,
-		    i;
-
-		// Create an ordered array out of the object
-		items = hawkejs.order(items, {subOrder: 'ASC'});
-		items = hawkejs.treeify(items);
+		    i,
+		    j;
 
 		if (!options) {
 			options = {};
 		}
 
+		// Only do this in the root, not for children
 		if (!options.children) {
+
+			// Create an ordered array out of the object
+			items = hawkejs.order(items, {subOrder: 'ASC'});
+			items = hawkejs.treeify(items);
 
 			if (!options.config) {
 				options.config = {};
@@ -304,6 +306,16 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 				html += '<div class="dd-handle">' + item[options.lititle] + '</div>';
 			}
 
+			if (options.actions) {
+				if (!Array.isArray(options.actions)) {
+					options.actions = [options.actions];
+				}
+
+				for (j = 0; j < options.actions.length; j++) {
+					html += '<div class="dd3-extra action-' + options.actions[j] + '"><i class="fa fa-' + options.actions[j] + '"></i></div>';
+				}
+			}
+
 			if (item.children && item.children.length) {
 
 				// Clone the options object
@@ -354,7 +366,8 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		this.echo(nestableBuilder(this.menuSource, {
 			id: 'nestable-menu-editor',
 			lititle: 'title',
-			liicon: 'wrench'
+			liicon: 'wrench',
+			actions: ['trash-o']
 		}));
 	};
 

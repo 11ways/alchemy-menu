@@ -64,9 +64,11 @@ start(store('chimera-view-setting').contentblock) %>
 (function() {
 
 var baseUrl = <% echo(JSON.stringify(pieceUrl)) %>,
-    menuId  = <% echo(JSON.stringify(menuId)) %>;
+    menuId  = <% echo(JSON.stringify(menuId)) %>,
+    $editor = $('#nestable-menu-editor');
 
-$('#nestable-menu-editor .dd3-config').click(function(e) {
+$editor.on('click', '.dd3-config', function(e) {
+
 	var $this = $(this),
 	    $li   = $this.parents('li'),
 	    id    = $li.attr('data-id'),
@@ -78,23 +80,76 @@ $('#nestable-menu-editor .dd3-config').click(function(e) {
 	hawkejs.goToAjaxView(url, undefined, undefined, function(payload){
 		console.log('Loaded & rendered menu piece config url')
 	});
-
 });
+
+$editor.on('click', '.action-trash-o', function(e) {
+
+	var $this = $(this),
+	    $li   = $this.parents('li'),
+	    id    = $li.attr('data-id'),
+	    url;
+
+	url = hawkejs.fillParam(baseUrl, {pieceid: id});
+	
+	$.post(url, {'delete': true}, function(result) {
+
+		if (!result.pieceErr) {
+			$li.remove();
+		}
+	});
+});
+
 
 // Show a modal when menu piece config data is loaded
 hawkejs.event.on({create: 'block', name: 'tempeditor'}, function(identifier, data) {
 	$('#tempeditor div.modal').modal();
 });
 
-hawkejs.event.on('menu-manager-drop', function(identifier, item) {
+/**
+ * Convert a nestable source data tree into a simple list
+ *
+ * @author   Jelle De Loecker   <jelle@codedor.be>
+ * @since    0.0.1
+ * @version  0.0.1
+ *
+ * @param    {Array}   items
+ * @param    {Object}  children
+ * @param    {String}  parent_id
+ */
+function detree(items, children, parent_id) {
 
-	var url  = hawkejs.fillParam(baseUrl, {pieceid: item.sourceId}),
-	    data = {},
-	    items,
-	    piece,
+	var item,
 	    i;
 
-	items = $(item.destRoot).nestable('serialize');
+	for (i = 0; i < children.length; i++) {
+
+		item = children[i];
+
+		if (parent_id) {
+			item.parent = parent_id;
+		}
+
+		items.push(item);
+
+		if (item.children) {
+			detree(items, item.children, item.id);
+		}
+
+		delete item.children;
+	}
+}
+
+hawkejs.event.on('menu-manager-drop', function(identifier, item) {
+
+	var url   = hawkejs.fillParam(baseUrl, {pieceid: item.sourceId}),
+	    data  = {},
+	    items = [],
+	    piece,
+	    tree,
+	    i;
+
+	tree = $(item.destRoot).nestable('serialize');
+	detree(items, tree);
 
 	for (i = 0; i < items.length; i++) {
 
@@ -105,6 +160,12 @@ hawkejs.event.on('menu-manager-drop', function(identifier, item) {
 			order: items.length - i
 		};
 
+		if (piece.parent) {
+			data.ModelEditorField.parent = piece.parent;
+		} else {
+			data.ModelEditorField.parent = null;
+		}
+
 		if (String(piece.id).isObjectId()) {
 			// @todo: save them all in one request, not piece by piece
 			$.post(url, {data: data});
@@ -112,9 +173,13 @@ hawkejs.event.on('menu-manager-drop', function(identifier, item) {
 
 			hawkejs.goToAjaxView(url, undefined, {menuId: menuId, create: true, data: data}, function(payload) {
 
-				pr('Added new menu piece');
-				pr(payload);
-				pr(item);
+				var $item = $(item.sourceEl);
+
+				url = hawkejs.fillParam(baseUrl, {pieceid: payload.piece._id});
+				$('#MenuPieceAddForm').attr('action', url);
+
+				$item.data('id', payload.piece._id);
+				$('.dd3-content', $item).html(payload.pieceTitle);
 			});
 		}
 	}
