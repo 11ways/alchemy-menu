@@ -16,6 +16,8 @@ Model.extend(function MenuModel (){
 	this.preInit = function preInit() {
 		this.parent();
 
+		this.displayField = 'name';
+
 		this.hasMany = {
 			MenuPiece: {
 				modelName: 'MenuPiece',
