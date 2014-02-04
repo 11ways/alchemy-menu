@@ -40,6 +40,8 @@ Model.extend(function MenuModel (){
 	 */
 	this.getItemType = function getItemType(name) {
 
+		var Item;
+
 		if (!name) {
 			name = 'link'
 		} else {
@@ -47,11 +49,16 @@ Model.extend(function MenuModel (){
 		}
 
 		if (this.itemTypes[name]) {
-			return this.itemTypes[name];
+			Item = this.itemTypes[name];
 		} else {
 			// Return the link item type by default
-			return this.itemTypes['link'];
+			Item = this.itemTypes['link'];
 		}
+
+		// Augment the item instance
+		Item = alchemy.augment(Item, this.__augment__);
+
+		return Item;
 	};
 
 	/**
