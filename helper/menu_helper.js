@@ -202,8 +202,8 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		html += '</ol></div>';
 
 
-		html += '<script>$("#nestable-menu").nestable({dropCallback: ' + String(dropCallback) + '});';
-		html += '$(".dd-clonesource").nestable({cloneSource: true});</script>';
+		html += '<script>setTimeout(function(){$("#nestable-menu").nestable({dropCallback: ' + String(dropCallback) + '});';
+		html += '$(".dd-clonesource").nestable({cloneSource: true});}, 200);</script>';
 
 		return html;
 	};
@@ -339,7 +339,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 			html += '</div>';
 
 			// Add the constructing script
-			html += '<script>$("#' + options.id + '").nestable(' + hawkejs.uneval(options.config) + ');</script>';
+			html += '<script>setTimeout(function(){$("#' + options.id + '").nestable(' + hawkejs.uneval(options.config) + ');}, 150);</script>';
 		}
 
 		return html;
