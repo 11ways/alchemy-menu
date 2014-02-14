@@ -1,0 +1,13 @@
+{
+	"name": "alchemy-menu",
+	"description": "Menu plugin for Alchemy MVC",
+	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/codedor/alchemy-menu.git"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=0.8"
+	}
+}
