@@ -301,9 +301,9 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 
 			if (typeof options.liicon !== 'undefined') {
 				html += '<div class="dd3-config"><i class="fa fa-' + options.liicon + '"></i></div>';
-				html += '<div class="dd-handle dd3-content">' + item[options.lititle] + '</div>';
+				html += '<div class="dd-handle dd3-content"><span class="text">' + item[options.lititle] + '</span></div>';
 			} else {
-				html += '<div class="dd-handle">' + item[options.lititle] + '</div>';
+				html += '<div class="dd-handle"><span class="text">' + item[options.lititle] + '</span></div>';
 			}
 
 			if (options.actions) {
@@ -312,7 +312,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 				}
 
 				for (j = 0; j < options.actions.length; j++) {
-					html += '<div class="dd3-extra action-' + options.actions[j] + '"><i class="fa fa-' + options.actions[j] + '"></i></div>';
+					html += '<div class="dd3-extra action-' + options.actions[j] + '" style="right:' + 30*j + 'px"><i class="fa fa-' + options.actions[j] + '"></i></div>';
 				}
 			}
 
@@ -339,7 +339,7 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 			html += '</div>';
 
 			// Add the constructing script
-			html += '<script>setTimeout(function(){$("#' + options.id + '").nestable(' + hawkejs.uneval(options.config) + ');}, 150);</script>';
+			html += '<script>setTimeout(function(){$("#' + options.id + '").nestable(' + hawkejs.uneval(options.config) + ').nestable("collapseAll");}, 150);</script>';
 		}
 
 		return html;
