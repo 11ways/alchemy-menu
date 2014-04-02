@@ -59,6 +59,9 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 				html += options.singleOpen || '';
 			}
 
+			entry.contentPrepend += '<span class="menu-item-text">';
+			entry.contentAppend = '</span>' + entry.contentAppend;
+
 			html += this.add_link(entry.url, {
 				'prepend': entry.contentPrepend,
 				'append': entry.contentAppend,
