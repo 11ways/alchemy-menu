@@ -161,6 +161,10 @@ Model.extend(function MenuModel (){
 					// Get the current menu piece data
 					piece = result.MenuPiece[i];
 
+					if (!piece) {
+						continue;
+					}
+
 					if (that.itemTypes[piece.type]) {
 
 						(function(piece) {
