@@ -26,6 +26,8 @@ Model.extend(function MenuPieceModel (){
 			type     : 'String',
 			settings : 'Object'
 		};
+
+		this.inItemAclPath = 'settings._acl';
 	};
 
 });
