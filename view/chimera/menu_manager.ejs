@@ -66,6 +66,7 @@ start(store('chimera-view-setting').contentblock) %>
 
 var baseUrl = <% echo(JSON.stringify(pieceUrl)) %>,
     menuId  = <% echo(JSON.stringify(menuId)) %>,
+    menuSource = <% echo(JSON.stringify(menuSource)) %>,
     $editor = $('#nestable-menu-editor');
 
 $editor.on('click', '.dd3-config', function(e) {
@@ -86,12 +87,12 @@ $editor.on('click', '.dd3-config', function(e) {
 $editor.on('click', '.action-trash-o', function(e) {
 
 	var $this = $(this),
-	    $li   = $this.parents('li'),
+	    $li   = $this.parent('li'),
 	    id    = $li.attr('data-id'),
 	    url;
 
 	url = hawkejs.fillParam(baseUrl, {pieceid: id});
-	
+
 	$.post(url, {'delete': true}, function(result) {
 
 		if (!result.pieceErr) {
@@ -140,51 +141,109 @@ function detree(items, children, parent_id) {
 	}
 }
 
-hawkejs.event.on('menu-manager-drop', function(identifier, item) {
+function mm_createMenuItem(item) {
 
 	var url   = hawkejs.fillParam(baseUrl, {pieceid: item.sourceId}),
 	    data  = {},
 	    items = [],
-	    piece,
-	    tree,
-	    i;
+	    nItem,
+	    newNr,
+	    tree;
 
 	tree = $(item.destRoot).nestable('serialize');
 	detree(items, tree);
 
+	// Find the order for the new item
 	for (i = 0; i < items.length; i++) {
-
-		piece = items[i];
-		url = hawkejs.fillParam(baseUrl, {pieceid: piece.id});
-
-		data.ModelEditorField = {
-			order: items.length - i
-		};
-
-		if (piece.parent) {
-			data.ModelEditorField.parent = piece.parent;
-		} else {
-			data.ModelEditorField.parent = null;
-		}
-
-		if (String(piece.id).isObjectId()) {
-			// @todo: save them all in one request, not piece by piece
-			$.post(url, {data: data});
-		} else {
-
-			hawkejs.goToAjaxView(url, undefined, {menuId: menuId, create: true, data: data}, function(payload) {
-
-				var $item = $(item.sourceEl);
-
-				url = hawkejs.fillParam(baseUrl, {pieceid: payload.piece._id});
-				$('#MenuPieceAddForm').attr('action', url);
-
-				$item.data('id', payload.piece._id);
-				$('.dd3-content', $item).html(payload.pieceTitle);
-			});
+		if (item.sourceId === items[i].id) {
+			newNr = items.length - i;
+			nItem = items[i];
+			break;
 		}
 	}
 
+	data.ModelEditorField = {
+		order: newNr
+	};
+
+	if (item.destId) {
+		data.ModelEditorField.parent = item.destId;
+	} else {
+		data.ModelEditorField.parent = null;
+	}
+
+	// Save the order
+	mm_orderMenu(item, items);
+
+	hawkejs.goToAjaxView(url, undefined, {menuId: menuId, createNew: true, data: data}, function(payload) {
+
+		// Set the new id
+		nItem.id = payload.piece._id;
+
+		var $item = $(item.sourceEl);
+
+		url = hawkejs.fillParam(baseUrl, {pieceid: payload.piece._id});
+		$('#MenuPieceAddForm').attr('action', url);
+
+		$item.data('id', payload.piece._id);
+		$('.dd3-content', $item).html(payload.pieceTitle);
+	});
+
+};
+
+function mm_orderMenu(item, items) {
+
+	var url   = baseUrl.beforeLast('/') + '_order',
+	    ordered = {},
+	    piece,
+	    newId,
+	    tree,
+	    i;
+
+	if (!items) {
+		items = [];
+		tree = $(item.destRoot).nestable('serialize');
+		detree(items, tree);
+	}
+
+	for (i = 0; i < items.length; i++) {
+
+		piece = items[i];
+
+		if (!String(piece.id).isObjectId) {
+			continue;
+		}
+
+		newId = items.length - i;
+
+		// Make sure the entry exists
+		if (!menuSource[piece.id]) {
+			menuSource[piece.id] = {settings: {order: -1}};
+		}
+
+		// Only update if the order has changed
+		if (menuSource[piece.id].settings.order != newId) {
+			ordered[piece.id] = newId;
+
+			// Also store it in the item again, because we're not reloading the page
+			menuSource[piece.id].settings.order = newId
+		}
+	}
+
+	if (Object.isEmpty(ordered)) return;
+
+	$.post(url, {ordered: ordered}, function(result) {
+		
+	});
+};
+
+hawkejs.event.on('menu-manager-drop', function(identifier, item) {
+
+	if (String(item.sourceId).isObjectId()) {
+		mm_orderMenu(item);
+	} else {
+		mm_createMenuItem(item);
+	}
 });
 }());
 </script>
