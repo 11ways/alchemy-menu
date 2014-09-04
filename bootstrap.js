@@ -27,6 +27,8 @@ var options = {
 	}
 };
 
+var linkmap = alchemy.shared('Connection.map');
+
 // Inject the user-overridden options
 alchemy.plugins.menu = alchemy.inject(options, alchemy.plugins.menu);
 
@@ -35,6 +37,7 @@ alchemy.on('render.callback', function(render, callback) {
 
 	// Only send this data on the initial pageload
 	if (!render.ajax) {
+		render.store('linkMap', linkmap);
 		render.store('menuOptions', alchemy.plugins.menu);
 	}
 	

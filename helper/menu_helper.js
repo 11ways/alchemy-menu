@@ -103,6 +103,44 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 	};
 
 	/**
+	 * Get the url for a connection name
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.1.0
+	 * @version  0.1.0
+	 *
+	 * @param    {String}    connection
+	 * @param    {Object}    options
+	 */
+	menu.url = function url(connection, options) {
+
+		var template = this.__storageVars.linkMap[connection];
+
+		if (!template) {
+			return '';
+		}
+
+		return template.fillPlaceholders(options);
+	};
+
+	/**
+	 * Print the link for the given connection
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.1.0
+	 * @version  0.1.0
+	 *
+	 * @param    {String}    connection
+	 * @param    {Object}    options
+	 */
+	menu.link = function link(connection, options) {
+
+		var url = menu.url.call(this, connection, options);
+
+		this.add_link(url, {name: options.name});
+	};
+
+	/**
 	 * Output a menu
 	 *
 	 * @author   Jelle De Loecker   <jelle@codedor.be>
