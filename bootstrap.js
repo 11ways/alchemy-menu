@@ -30,16 +30,10 @@ var options = {
 var linkmap = alchemy.shared('Connection.map');
 
 // Inject the user-overridden options
-alchemy.plugins.menu = alchemy.inject(options, alchemy.plugins.menu);
+alchemy.plugins.menu = Object.assign(options, alchemy.plugins.menu);
 
 // Send the menu options to the client
-alchemy.on('render.callback', function(render, callback) {
-
-	// Only send this data on the initial pageload
-	if (!render.ajax) {
-		render.store('linkMap', linkmap);
-		render.store('menuOptions', alchemy.plugins.menu);
-	}
-	
-	callback();
+alchemy.hawkejs.on({type: 'viewrender', status: 'begin', client: false}, function onBegin(viewRender) {
+	viewRender.expose('linkMap', linkmap);
+	viewRender.expose('menuOptions', alchemy.plugins.menu);
 });
