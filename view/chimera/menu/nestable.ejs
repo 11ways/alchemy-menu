@@ -1,0 +1,23 @@
+<div class="nestMenu">
+	<ol class="nestMenu-list">
+		<% for (i = 0; i < items.length; i++) { %>
+			<% item = items[i] %>
+			<li
+				class="nestMenu-item<%= item.allowChildren ? '' : ' nestMenu-item--noChildren' %>"
+				data-id="<%= item._id %>"
+			>
+				<div class="nestMenu-config">C</div>
+				<div class="nestMenu-handle nestMenu-content">Type: <%= item.type %></div>
+			</li>
+		<% } %>
+	</ol>
+</div>
+
+<div class="nestSource">
+	<ol class="nestSource-list">
+	<% console.log('rr',menuTypes) %>
+	<% for (key in menuTypes) { %>
+		<li class="nestSource-item" data-id="key"><%= menuTypes[key] %></li>
+	<% } %>
+	</ol>
+</div>

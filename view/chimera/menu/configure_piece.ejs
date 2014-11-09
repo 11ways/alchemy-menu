@@ -1,0 +1,35 @@
+<% start('menuPieceConfigure') %>
+<div class="chimeraEditor">
+	<a class="btn btn--record action-save btn-top" href="/chimera/menu_manager/menu_pieces/save_piece/<%= groups['general'][0].id %>"><span class="fa fa-floppy-o"></span></a>
+
+	<div class="radioTabs">
+		<%
+			counter = 0;
+
+			for (name in groups) {
+				record = groups[name][0];
+				fields = record.fields;
+				id = record.id;
+
+				print('<input class="radioTabs-input" name="etab" type="radio" id="r' + counter + '"');
+				if (counter === 0) print(' checked');
+				print('>');
+				print('<label class="radioTabs-label" for="r' + counter + '"><section>');
+				print('<h1 class="radioTabs-title">');
+				print(name);
+				print('</h1>');
+				print('<div class="radioTabs-content">');
+
+				for (i = 0; i < fields.length; i++) {
+					Chimera.printField(fields[i]);
+				}
+
+				print('</div>');
+				print('</section></label>');
+
+				counter++;
+			}
+		%>
+	</div>
+</div>
+<% end('menuPieceConfigure') %>

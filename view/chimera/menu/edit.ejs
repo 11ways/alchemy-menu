@@ -1,0 +1,21 @@
+<% expands('layouts/chimera') %>
+<% script(['menu/jquery.nestable', 'menu/menu_manager']) %>
+<% style('menu/nestable') %>
+
+<% start('pageCentral') %>
+	<main>
+		<article class="chimeraEditor">
+			<header class="chimeraEditor-header u-stretch">
+				<h1 class="pageTitle u-child"><%= pageTitle %>:</h1>
+				<nav class="u-child">
+					<% Chimera.printActions('model', {className: 'btn-top'}, record) %>
+					<% Chimera.printActions('record', {className: 'btn-top'}, record) %>
+				</nav>
+			</header>
+
+			<div class="menuManager">
+			<% console.log(menuItem) %>
+			</div>
+		</article>
+	</main>
+<% end('pageCentral') %>
