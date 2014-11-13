@@ -34,7 +34,7 @@ Menu.setMethod(function edit(conduit) {
 	for (key in MenuItemTypes) {
 		types[key] = MenuItemTypes[key].prototype.title;
 	}
-console.log(types)
+
 	model.find('first', {conditions: {_id: alchemy.castObjectId(id)}}, function(err, items) {
 
 		if (err) {

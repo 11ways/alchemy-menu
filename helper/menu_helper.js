@@ -16,18 +16,19 @@ module.exports = function alchemyMenuHelpers(Hawkejs, Blast) {
 	 */
 	Menu.setMethod(function get(name, options) {
 
-		var allMenus = this.view.expose('allMenus'),
-		    menu,
-		    tree;
+		var that = this;
 
-		if (allMenus[name] == null) {
-			return;
-		}
+		this.view.async(function getMenu(next) {
+			that.view.helpers.Alchemy.getResource('menu', {name: name}, function gotResult(err, pieces) {
 
-		menu = allMenus[name];
-		tree = treeify(JSON.undry(JSON.dry(menu.children)));
+				var tree = treeify(pieces),
+				    placeholder;
 
-		this.view.print_element('menu/wrapper', {items: tree});
+				placeholder = that.view.print_element('menu/wrapper', {items: Object.values(tree)});
+
+				placeholder.getContent(next);
+			});
+		});
 	});
 
 	return;
