@@ -1,0 +1,16 @@
+<ol class="dd-list">
+	<% for (i = 0; i < items.length; i++) { %>
+		<% item = items[i] %>
+		<li
+			class="dd-item<%= item.allowChildren === false ? ' dd-nochildren' : '' %>"
+			data-id="<%= item._id %>"
+		>
+			<div class="dd3-config"><span class="fi-pencil"></span></div>
+			<div class="dd-handle dd3-content">Type: <%= item.type %></div>
+			<!--<div class="dd3-extra action-trash-o" style="right:0px;"></div> -->
+			<% if (item.children && item.children.length) {
+				print_element('chimera/menu/sub_nestable', {items: item.children});
+			} %>
+		</li>
+	<% } %>
+</ol>

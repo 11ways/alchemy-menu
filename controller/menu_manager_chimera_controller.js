@@ -110,7 +110,10 @@ Menu.setMethod(function order_pieces(conduit) {
 		return conduit.error(new Error('No menu input given'));
 	}
 
-	Object.each(ordered, function eachPiece(nr, id) {
+	Object.each(ordered, function eachPiece(piece, id) {
+
+		var nr = piece.order,
+		    parent = piece.parent;
 
 		if (id && String(id).isObjectId()) {
 
@@ -118,10 +121,18 @@ Menu.setMethod(function order_pieces(conduit) {
 
 				var data = {
 					_id: alchemy.castObjectId(id),
-					settings: {
-						order: nr
-					}
+					settings: {}
 				};
+
+				if (nr != null) {
+					data.settings.order = nr;
+				}
+
+				if (piece.parent === false) {
+					data.settings.parent = null;
+				} else if (piece.parent) {
+					data.settings.parent = piece.parent;
+				}
 
 				MP.save(data, function savedPiece(err, result) {
 					next(err, result);

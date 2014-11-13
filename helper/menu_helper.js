@@ -1,5 +1,36 @@
-module.exports = function alchemyMenuHelpers(hawkejs) {
-	
+module.exports = function alchemyMenuHelpers(Hawkejs, Blast) {
+
+	var Menu = Hawkejs.Helper.extend(function MenuHelper(view) {
+		Hawkejs.Helper.call(this, view);
+	});
+
+	/**
+	 * Output a menu
+	 *
+	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @since    0.0.1
+	 * @version  1.0.0
+	 *
+	 * @param    {String}    name         The name of the menu
+	 * @param    {Object}    options      Extra options
+	 */
+	Menu.setMethod(function get(name, options) {
+
+		var allMenus = this.view.expose('allMenus'),
+		    menu,
+		    tree;
+
+		if (allMenus[name] == null) {
+			return;
+		}
+
+		menu = allMenus[name];
+		tree = treeify(JSON.undry(JSON.dry(menu.children)));
+
+		this.view.print_element('menu/wrapper', {items: tree});
+	});
+
+	return;
 	// References
 	var helpers = hawkejs.helpers,
 	    menu    = helpers.menu = {},
@@ -437,3 +468,129 @@ module.exports = function alchemyMenuHelpers(hawkejs) {
 		}));
 	};
 };
+
+function treeify(obj, options) {
+
+	var originalArray = Array.isArray(obj),
+	    store = {},
+	    list  = [],
+	    parentKey,
+	    filtered,
+	    parent,
+	    item,
+	    tree,
+	    key,
+	    i;
+
+	if (!options) {
+		options = {};
+	}
+
+	if (!options.key) {
+		options.key = 'id';
+	}
+
+	if (!options.parent) {
+		options.parent = 'parent';
+	}
+
+	if (!options.children) {
+		options.children = 'children';
+	}
+
+	if (!options.childrenType) {
+		options.childrenType = 'auto';
+	} else {
+		if (options.childrenType.toLowerCase() == 'array') {
+			options.childrenType = 'array';
+		} else {
+			options.childrenType = 'object';
+		}
+	}
+
+	// Make sure we have an object with the keys and an array
+	if (originalArray) {
+
+		if (options.childrenType == 'auto') {
+			options.childrenType = 'array';
+		}
+
+		for (i = 0; i < obj.length; i++) {
+
+			// Make sure the item has a key
+			if (!obj[i][options.key]) {
+				obj[i][options.key] = i;
+			}
+
+			store[obj[i][options.key]] = obj[i];
+		}
+
+		list = obj.slice(0);
+	} else {
+
+		if (options.childrenType == 'auto') {
+			options.childrenType = 'object';
+		}
+
+		for (key in obj) {
+
+			// Make sure the item has a key
+			if (!obj[key][options.key]) {
+				obj[key][options.key] = key;
+			}
+
+			store[obj[key][options.key]] = obj[key];
+			list.push(obj[key]);
+		}
+	}
+
+	if (typeof options.childrenType !== 'function') {
+		options.childrenType = 'array';
+	}
+
+	// Treeify the results
+	for (i = 0; i < list.length; i++) {
+		item = list[i];
+		parentKey = item[options.parent];
+
+		// See if the wanted parent is actually in the object
+		if (store[parentKey]) {
+			parent = store[parentKey];
+
+			if (options.childrenType == 'array') {
+				if (!parent[options.children] || ! Array.isArray(parent[options.children])) {
+					parent[options.children] = [];
+				}
+
+				parent[options.children].push(item);
+			} else {
+				if (typeof parent[options.children] !== 'object') {
+					parent[options.children] = {};
+				}
+
+				parent[options.children][item[options.key]] = item;
+			}
+		}
+	}
+
+	if (originalArray || options.type === 'array') {
+		filtered = list.filter(function(element) {
+			// If the element has a parent set, remove it from the list
+			if (element[options.parent]) {
+				return false;
+			} else {
+				return true;
+			}
+		});
+
+		return filtered;
+	} else {
+		for (key in store) {
+			if (store[key].parent) {
+				delete store[key];
+			}
+		}
+
+		return store;
+	}
+}

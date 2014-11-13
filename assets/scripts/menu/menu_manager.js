@@ -1,4 +1,4 @@
-hawkejs.require('chimera/chimera', function() {
+hawkejs.require(['chimera/chimera', 'menu/treeify'], function() {
 	// Make the "Save" button work inside the modal menu configure
 	hawkejs.scene.on({type: 'set', name: 'menuPieceConfigure', template: 'chimera/menu/configure_piece'}, applySave);
 
@@ -9,6 +9,7 @@ hawkejs.require('chimera/chimera', function() {
 		    $wrapper,
 		    newVars,
 		    menuId,
+		    items,
 		    temp,
 		    i;
 
@@ -19,7 +20,7 @@ hawkejs.require('chimera/chimera', function() {
 
 		// Create variable object for rendering the nestable menu
 		newVars = {
-			items: variables.menuItem.MenuPiece,
+			recordItems: variables.menuItem.MenuPiece,
 			menuTypes: variables.menuTypes
 		};
 
@@ -28,7 +29,11 @@ hawkejs.require('chimera/chimera', function() {
 		for (i = 0; i < variables.menuItem.MenuPiece.length; i++) {
 			temp = variables.menuItem.MenuPiece[i];
 			menuSource[temp._id] = temp;
+			temp.parent = temp.settings.parent;
 		}
+
+		items = treeify(menuSource, {subOrder: 'ASC', type: 'array'});
+		newVars.items = items;
 
 		// Render the HTML
 		hawkejs.render('chimera/menu/nestable', newVars, function(err, result) {
@@ -149,12 +154,15 @@ hawkejs.require('chimera/chimera', function() {
 
 		function orderMenu(item, items) {
 
-			var ordered,
+			var parentId,
+			    ordered,
 			    baseUrl,
+			    parent,
 			    Router,
 			    piece,
 			    newId,
 			    tree,
+			    data,
 			    i;
 
 			ordered = {};
@@ -170,13 +178,17 @@ hawkejs.require('chimera/chimera', function() {
 			}));
 
 			if (!items) {
-				items = [];
-				tree = $(item.destRoot).nestable('serialize');
-				detree(items, tree);
+				// items = [];
+				// tree = $(item.destRoot).nestable('serialize');
+				// detree(items, tree);
+				items = Object.values(menuSource);
 			}
 
-			for (i = 0; i < items.length; i++) {
+			parent = item.sourceEl.parents('.dd-item');
+			parentId = parent.data('id');
 
+			for (i = 0; i < items.length; i++) {
+				data = {};
 				piece = items[i];
 
 				if (!String(piece.id).isObjectId) {
@@ -190,9 +202,20 @@ hawkejs.require('chimera/chimera', function() {
 					menuSource[piece.id] = {settings: {order: -1}};
 				}
 
+				if (piece.id == item.sourceId) {
+					ordered[piece.id] = {
+						parent: parentId || false
+					};
+				}
+
 				// Only update if the order has changed
 				if (menuSource[piece.id].settings.order != newId) {
-					ordered[piece.id] = newId;
+
+					if (!ordered[piece.id]) {
+						ordered[piece.id] = {};
+					}
+
+					ordered[piece.id].order = newId;
 
 					// Also store it in the item again, because we're not reloading the page
 					menuSource[piece.id].settings.order = newId
