@@ -58,6 +58,89 @@ console.log(types)
 });
 
 /**
+ * Action to create new menu piece
+ *
+ * @param   {Conduit}   conduit
+ */
+Menu.setMethod(function create_piece(conduit) {
+
+	var that   = this,
+	    piece  = conduit.body.piece,
+	    MP     = Model.get('MenuPiece'),
+	    menuId = alchemy.castObjectId(conduit.param('id')),
+	    data;
+
+	if (!piece || !menuId) {
+		return conduit.error(new Error('No new menu piece given'));
+	}
+
+	data = {
+		menu_id: menuId,
+		type: piece.type,
+		settings: {
+			order: piece.order,
+			parent: piece.parent
+		}
+	};
+
+	data = {MenuPiece: data};
+
+	MP.save(data, function saved(err, result) {
+
+		if (err || !result || !result.length) {
+			return conduit.error(err);
+		}
+
+		conduit.end({MenuPiece: result[0]});
+	});
+});
+
+/**
+ * Action to order menu pieces
+ *
+ * @param   {Conduit}   conduit
+ */
+Menu.setMethod(function order_pieces(conduit) {
+
+	var ordered = conduit.body.ordered,
+	    tasks   = {},
+	    MP      = Model.get('MenuPiece');
+
+	if (!ordered) {
+		return conduit.error(new Error('No menu input given'));
+	}
+
+	Object.each(ordered, function eachPiece(nr, id) {
+
+		if (id && String(id).isObjectId()) {
+
+			tasks[id] = function orderTask(next) {
+
+				var data = {
+					_id: alchemy.castObjectId(id),
+					settings: {
+						order: nr
+					}
+				};
+
+				MP.save(data, function savedPiece(err, result) {
+					next(err, result);
+				});
+			};
+		}
+	});
+
+	Function.parallel(tasks, function orderedPieces(err, result) {
+
+		if (err) {
+			return conduit.error(err);
+		}
+
+		conduit.end('Success');
+	});
+});
+
+/**
  * Action to configure a single menu piece
  *
  * @param   {Conduit}   conduit

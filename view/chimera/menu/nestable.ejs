@@ -1,23 +1,34 @@
-<div class="nestMenu">
-	<ol class="nestMenu-list">
-		<% for (i = 0; i < items.length; i++) { %>
-			<% item = items[i] %>
-			<li
-				class="nestMenu-item<%= item.allowChildren ? '' : ' nestMenu-item--noChildren' %>"
-				data-id="<%= item._id %>"
-			>
-				<div class="nestMenu-config">C</div>
-				<div class="nestMenu-handle nestMenu-content">Type: <%= item.type %></div>
-			</li>
-		<% } %>
-	</ol>
-</div>
+<div>
+	<div>
+		<h2>Source items</h2>
+		<div class="dd dd-clonesource dd-nodrop nestSource">
+			<ol class="dd-list">
+			<% for (key in menuTypes) { %>
+				<li class="dd-item dd-nochildren" data-id="<%= key %>">
+					<div class="dd3-config"><span class="fi-pencil"></span></div>
+					<div class="dd-handle dd3-content"><%= menuTypes[key] %></div>
+				</li>
+			<% } %>
+			</ol>
+		</div>
+	</div>
 
-<div class="nestSource">
-	<ol class="nestSource-list">
-	<% console.log('rr',menuTypes) %>
-	<% for (key in menuTypes) { %>
-		<li class="nestSource-item" data-id="key"><%= menuTypes[key] %></li>
-	<% } %>
-	</ol>
+	<div>
+		<h2>Menu</h2>
+		<div class="dd nestMenu">
+			<ol class="dd-list">
+				<% for (i = 0; i < items.length; i++) { %>
+					<% item = items[i] %>
+					<li
+						class="dd-item<%= item.allowChildren ? '' : ' dd-nochildren' %>"
+						data-id="<%= item._id %>"
+					>
+						<div class="dd3-config"><span class="fi-pencil"></span></div>
+						<div class="dd-handle dd3-content">Type: <%= item.type %></div>
+						<!--<div class="dd3-extra action-trash-o" style="right:0px;"></div> -->
+					</li>
+				<% } %>
+			</ol>
+		</div>
+	</div>
 </div>
