@@ -1,6 +1,6 @@
-<ul>
+<ul class="menu-list">
 	<% for (i = 0; i < items.length; i++) { %>
-		<li>
+		<li class="menu-element">
 			<% add_link(items[i].url, {title: items[i].title}) %>
 			<% if (items[i].children) { %>
 				<% print_element('menu/list', {wrap: false, items: items[i].children}) %>
