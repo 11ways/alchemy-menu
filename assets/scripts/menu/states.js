@@ -1,4 +1,4 @@
-hawkejs.require('domspot', function() {
+hawkejs.require('//code.jquery.com/jquery-1.11.0.min.js', function() {
 
 	hawkejs.scene.on({type: 'set', template: 'menu/wrapper'}, applyMenuStates);
 
