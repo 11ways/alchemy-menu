@@ -33,7 +33,8 @@ var linkmap = alchemy.shared('Connection.map'),
 // Inject the user-overridden options
 alchemy.plugins.menu = Object.assign(options, alchemy.plugins.menu);
 
-setTimeout(function() {
+alchemy.ready(function preloadMenus() {
+
 	var Menu = Model.get('Menu');
 
 	Menu.find('all', function allMenus(err, results) {
@@ -68,7 +69,7 @@ setTimeout(function() {
 			menus[temp.Menu.name] = entry;
 		}
 	});
-}, 1000)
+});
 
 // Send the menu options to the client
 alchemy.hawkejs.on({type: 'viewrender', status: 'begin', client: false}, function onBegin(viewRender) {
