@@ -1,4 +1,5 @@
-hawkejs.require(['chimera/chimera', 'menu/treeify'], function() {
+hawkejs.require(['chimera/chimera', 'menu/treeify'], function applyManager() {
+
 	// Make the "Save" button work inside the modal menu configure
 	hawkejs.scene.on({type: 'set', name: 'menuPieceConfigure', template: 'chimera/menu/configure_piece'}, applySave);
 
