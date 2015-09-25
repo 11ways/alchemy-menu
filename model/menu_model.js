@@ -34,9 +34,9 @@ Menu.constitute(function constitute() {
  */
 Menu.constitute(function chimeraConfig() {
 
-	var view,
-	    list,
-	    edit;
+	var list,
+	    edit,
+	    view;
 
 	if (!this.chimera) {
 		return;
@@ -52,8 +52,8 @@ Menu.constitute(function chimeraConfig() {
 
 	edit.addField('name');
 
-	// Get the galery group
-	view = this.chimera.getActionFields('gallery');
+	// Get the view group
+	view = this.chimera.getActionFields('view');
 
 	view.addField('name');
 });

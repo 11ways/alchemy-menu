@@ -8,40 +8,56 @@
  * @version  1.0.0
  */
 var Piece = Function.inherits('Model', function MenuPieceModel(options) {
-
-	var chimera,
-	    list,
-	    edit,
-		view;
-
 	MenuPieceModel.super.call(this, options);
-
 	this.types = alchemy.shared('Menu.itemTypes');
+});
 
-	// Create the chimera behaviour
-	chimera = this.addBehaviour('chimera');
+/**
+ * Constitute the class wide schema
+ *
+ * @author   Jelle De Loecker <jelle@develry.be>
+ * @since    1.0.0
+ * @version  1.0.0
+ */
+Piece.constitute(function addFields() {
+	this.addField('type', 'Enum');
+	this.addField('settings', 'Schema', {schema: 'type'});
+
+	this.hasOneParent('Menu');
+	this.setEnumValues('types', alchemy.shared('Menu.itemTypes'));
+});
+
+/**
+ * Configure chimera for this model
+ *
+ * @author   Jelle De Loecker <jelle@develry.be>
+ * @since    1.0.0
+ * @version  1.0.0
+ */
+Piece.constitute(function chimeraConfig() {
+
+	var list,
+	    edit,
+	    view;
+
+	if (!this.chimera) {
+		return;
+	}
 
 	// Get the list group
-	list = chimera.getActionFields('list');
+	list = this.chimera.getActionFields('list');
 
 	list.addField('_id');
 
 	// Get the edit group
-	edit = chimera.getActionFields('edit');
+	edit = this.chimera.getActionFields('edit');
 
 	edit.addField('menu_id');
 	edit.addField('type');
 	edit.addField('settings');
 
 	// Get the view group
-	view = chimera.getActionFields('view');
+	view = this.chimera.getActionFields('view');
 
 	view.addField('type');
-
 });
-
-Piece.addField('type', 'Enum');
-Piece.addField('settings', 'Schema', {schema: 'type'});
-
-Piece.hasOneParent('Menu');
-Piece.setEnumValues('types', alchemy.shared('Menu.itemTypes'));
