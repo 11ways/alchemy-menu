@@ -7,9 +7,9 @@ module.exports = function alchemyMenuHelpers(Hawkejs, Blast) {
 	/**
 	 * Output a menu
 	 *
-	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @author   Jelle De Loecker   <jelle@develry.be>
 	 * @since    0.0.1
-	 * @version  1.0.0
+	 * @version  0.2.0
 	 *
 	 * @param    {String}    name         The name of the menu
 	 * @param    {Object}    options      Extra options

@@ -2,12 +2,19 @@
 	"name": "alchemy-menu",
 	"description": "Menu plugin for Alchemy MVC",
 	"version": "0.2.0",
+	"author": "Jelle De Loecker <jelle@develry.be>",
+	"keywords": [
+		"alchemy",
+		"alchemymvc",
+		"plugin",
+		"menu"
+	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/codedor/alchemy-menu.git"
+		"url": "https://github.com/skerit/alchemy-menu.git"
 	},
 	"license": "MIT",
 	"engines": {
-		"node": ">=0.10"
+		"node": "~4.5.0"
 	}
 }

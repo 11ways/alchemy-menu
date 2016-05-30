@@ -2,7 +2,7 @@
  * Turn an object or array into a tree.
  * Orphans will be removed.
  *
- * @author   Jelle De Loecker   <jelle@codedor.be>
+ * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.10
  * @version  0.0.10
  *
