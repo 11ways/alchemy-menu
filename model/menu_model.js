@@ -5,9 +5,9 @@ var MenuItemTypes = alchemy.shared('Menu.itemTypes');
  *
  * @constructor
  *
- * @author   Jelle De Loecker   <jelle@kipdola.be>
+ * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  1.0.0
+ * @version  0.2.0
  */
 var Menu = Function.inherits('Model', function MenuModel(options) {
 	MenuModel.super.call(this, options);
@@ -17,8 +17,8 @@ var Menu = Function.inherits('Model', function MenuModel(options) {
  * Constitute the class wide schema
  *
  * @author   Jelle De Loecker <jelle@develry.be>
- * @since    1.0.0
- * @version  1.0.0
+ * @since    0.2.0
+ * @version  0.2.0
  */
 Menu.constitute(function constitute() {
 	this.addField('name', 'String');
@@ -29,8 +29,8 @@ Menu.constitute(function constitute() {
  * Configure chimera for this model
  *
  * @author   Jelle De Loecker <jelle@develry.be>
- * @since    1.0.0
- * @version  1.0.0
+ * @since    0.2.0
+ * @version  0.2.0
  */
 Menu.constitute(function chimeraConfig() {
 
@@ -61,9 +61,9 @@ Menu.constitute(function chimeraConfig() {
 /**
  * Get a menu by its name
  *
- * @author   Jelle De Loecker   <jelle@codedor.be>
+ * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  1.0.0
+ * @version  0.2.0
  *
  * @param    {String}   menuName   The name of the wanted menu
  * @param    {Function} callback
@@ -129,9 +129,9 @@ Menu.setMethod(function get(menuName, callback) {
 /**
  * Return menu information
  *
- * @author   Jelle De Loecker   <jelle@kipdola.be>
+ * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  1.0.0
+ * @version  0.2.0
  */
 Resource.register('menu', function getMenuData(data, callback) {
 	this.getModel('Menu').get(data.name, callback);

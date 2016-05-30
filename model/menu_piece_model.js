@@ -3,9 +3,9 @@
  *
  * @constructor
  *
- * @author   Jelle De Loecker   <jelle@codedor.be>
+ * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  1.0.0
+ * @version  0.2.0
  */
 var Piece = Function.inherits('Model', function MenuPieceModel(options) {
 	MenuPieceModel.super.call(this, options);
@@ -16,8 +16,8 @@ var Piece = Function.inherits('Model', function MenuPieceModel(options) {
  * Constitute the class wide schema
  *
  * @author   Jelle De Loecker <jelle@develry.be>
- * @since    1.0.0
- * @version  1.0.0
+ * @since    0.2.0
+ * @version  0.2.0
  */
 Piece.constitute(function addFields() {
 	this.addField('type', 'Enum');
@@ -31,8 +31,8 @@ Piece.constitute(function addFields() {
  * Configure chimera for this model
  *
  * @author   Jelle De Loecker <jelle@develry.be>
- * @since    1.0.0
- * @version  1.0.0
+ * @since    0.2.0
+ * @version  0.2.0
  */
 Piece.constitute(function chimeraConfig() {
 

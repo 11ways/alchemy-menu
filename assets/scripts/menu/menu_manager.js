@@ -271,7 +271,7 @@ hawkejs.require(['chimera/chimera', 'menu/treeify'], function applyManager() {
 	/**
 	 * Convert a nestable source data tree into a simple list
 	 *
-	 * @author   Jelle De Loecker   <jelle@codedor.be>
+	 * @author   Jelle De Loecker   <jelle@develry.be>
 	 * @since    0.0.1
 	 * @version  0.0.1
 	 *

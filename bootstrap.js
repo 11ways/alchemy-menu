@@ -1,6 +1,9 @@
+var linkmap = alchemy.shared('Connection.map'),
+    options,
+    menus;
 
 // Define the default menu options
-var options = {
+options = {
 
 	// The wrapper
 	wrap: {
@@ -26,9 +29,6 @@ var options = {
 		element: 'a'
 	}
 };
-
-var linkmap = alchemy.shared('Connection.map'),
-    menus;
 
 // Inject the user-overridden options
 alchemy.plugins.menu = Object.assign(options, alchemy.plugins.menu);
