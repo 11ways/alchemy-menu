@@ -5,9 +5,9 @@ var MenuItemTypes = alchemy.shared('Menu.itemTypes');
  *
  * @author        Jelle De Loecker   <jelle@develry.be>
  * @since         0.2.0
- * @version       0.2.0
+ * @version       0.3.0
  */
-var Menu = Function.inherits('EditorChimeraController', function MenuManagerChimeraController(conduit, options) {
+var Menu = Function.inherits('Alchemy.EditorChimeraController', function MenuManagerChimeraController(conduit, options) {
 
 	MenuManagerChimeraController.super.call(this, conduit, options);
 

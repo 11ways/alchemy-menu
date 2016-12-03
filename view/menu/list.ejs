@@ -1,9 +1,10 @@
 <ul class="menu-list">
-	<% for (i = 0; i < items.length; i++) { %>
+	<% for (i = 0; i < menu.items.length; i++) { %>
+		<% item = menu.items[i] %>
 		<li class="menu-element">
-			<% add_link(items[i].url, {title: items[i].title}) %>
-			<% if (items[i].children) { %>
-				<% print_element('menu/list', {wrap: false, items: items[i].children}) %>
+			<% add_link(item.settings.url, {title: item.settings.title}) %>
+			<% if (item.children) { %>
+				<% print_element('menu/list', {wrap: false, items: item.children}) %>
 			<% } %>
 		</li>
 	<% } %>

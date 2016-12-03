@@ -33,11 +33,29 @@ options = {
 // Inject the user-overridden options
 alchemy.plugins.menu = Object.assign(options, alchemy.plugins.menu);
 
+/**
+ * Get the default menu object
+ *
+ * @author   Jelle De Loecker   <jelle@develry.be>
+ * @since    0.3.0
+ * @version  0.3.0
+ */
+alchemy.plugins.menu.getDefault = function getDefault(name, callback) {
+	// Wait for alchemy, and all models, to be ready
+	alchemy.ready(function onReady() {
+
+		// Get the actual menu
+		var menu = Classes.Alchemy.MenuModel.getDefault(name);
+
+		callback(null, menu);
+	});
+};
+
 alchemy.ready(function preloadMenus() {
 
 	var Menu = Model.get('Menu');
 
-	Menu.find('all', function allMenus(err, results) {
+	Menu.find('all', {document: false}, function allMenus(err, results) {
 
 		var children,
 		    entry,
@@ -52,12 +70,14 @@ alchemy.ready(function preloadMenus() {
 			temp = results[i];
 			children = [];
 
-			for (j = 0; j < temp.MenuPiece.length; j++) {
-				c = temp.MenuPiece[j];
-				children.push(Object.assign({
-					id: c._id,
-					type: c.type
-				}, c.settings));
+			if (temp.MenuPiece) {
+				for (j = 0; j < temp.MenuPiece.length; j++) {
+					c = temp.MenuPiece[j];
+					children.push(Object.assign({
+						id: c._id,
+						type: c.type
+					}, c.settings));
+				}
 			}
 
 			entry = {
