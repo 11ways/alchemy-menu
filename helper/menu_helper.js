@@ -23,7 +23,7 @@ module.exports = function alchemyMenuHelpers(Hawkejs, Blast) {
 	 *
 	 * @author   Jelle De Loecker   <jelle@develry.be>
 	 * @since    0.0.1
-	 * @version  0.3.0
+	 * @version  0.4.0
 	 *
 	 * @param    {String}    name         The name of the menu
 	 * @param    {Object}    options      Extra options
@@ -33,7 +33,7 @@ module.exports = function alchemyMenuHelpers(Hawkejs, Blast) {
 		var that = this;
 
 		this.view.async(function getMenu(next) {
-			that.view.helpers.Alchemy.getResource({name: 'APIResource', params: {name: 'menu'}, body: {name: name}}, function gotResult(err, menu) {
+			that.view.helpers.Alchemy.getResource({name: 'APIResource', params: {action: 'menu'}, body: {name: name}}, function gotResult(err, menu) {
 
 				var placeholder;
 

@@ -130,8 +130,6 @@ Menu.setStatic(function getDefault(name) {
 		items : []
 	});
 
-	console.log(menu_document.items)
-
 	// Store the document for later use
 	default_menus[name] = menu_document;
 
@@ -357,13 +355,27 @@ Menu.setDocumentMethod(function addItem(item_type, options) {
 	return item;
 });
 
+if (!Classes.Alchemy.ApiController) {
+	return;
+}
+
 /**
  * Return menu information
  *
  * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  0.2.0
+ * @version  0.4.0
  */
-Resource.register('menu', function getMenuData(data, callback) {
-	this.getModel('Menu').get(data.name, callback);
+Classes.Alchemy.ApiController.setMethod(function menu(conduit) {
+
+	var data = conduit.body;
+
+	this.getModel('Menu').get(data.name, function done(err, result) {
+
+		if (err) {
+			return conduit.error(err);
+		}
+
+		conduit.end(result);
+	});
 });
