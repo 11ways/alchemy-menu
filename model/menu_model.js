@@ -242,7 +242,7 @@ Menu.setMethod(function getPosition(position_name, options, callback) {
  *
  * @author   Jelle De Loecker   <jelle@develry.be>
  * @since    0.0.1
- * @version  0.3.0
+ * @version  0.4.0
  *
  * @param    {String}   menuName   The name of the wanted menu
  * @param    {Function} callback
@@ -284,6 +284,8 @@ Menu.setMethod(function get(menuName, callback) {
 		result = result[0];
 		menu = result.Menu;
 		tasks = {};
+
+		menu.items.sortByPath(-1, 'weight');
 
 		menu.items.forEach(function eachPiece(piece, index) {
 
