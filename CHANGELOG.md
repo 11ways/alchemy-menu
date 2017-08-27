@@ -1,3 +1,5 @@
+## 0.4.1 (WIP)
+
 ## 0.4.0 (2017-08-27)
 
 * Implement the removal of `Resource` from alchemymvc
