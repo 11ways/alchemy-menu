@@ -13,8 +13,8 @@ var MenuItemTypes = alchemy.getClassGroup('menu_item'),
  *
  * @type         {Object}   options
  */
-var Menu = Function.inherits('Alchemy.Model', function MenuModel(options) {
-	MenuModel.super.call(this, options);
+var Menu = Function.inherits('Alchemy.Model', function Menu(options) {
+	Menu.super.call(this, options);
 });
 
 /**
@@ -125,7 +125,7 @@ Menu.setStatic(function getDefault(name) {
 	}
 
 	// Create the document
-	menu_document = new Classes.Alchemy.MenuModel.Document({
+	menu_document = new Classes.Alchemy.Model.Menu.Document({
 		name  : name,
 		items : []
 	});
@@ -265,11 +265,11 @@ Menu.setMethod(function get(menuName, callback) {
 		    menu,
 		    i;
 
-		if (err != null) {
+		if (err) {
 			return callback(err);
 		}
 
-		if (result.length == 0) {
+		if (!result) {
 
 			result = Menu.getDefault(menuName);
 
@@ -281,7 +281,6 @@ Menu.setMethod(function get(menuName, callback) {
 		}
 
 		// Get the first result
-		result = result[0];
 		menu = result.Menu;
 		tasks = {};
 
@@ -355,29 +354,4 @@ Menu.setDocumentMethod(function addItem(item_type, options) {
 	this.items.push(item);
 
 	return item;
-});
-
-if (!Classes.Alchemy.ApiController) {
-	return;
-}
-
-/**
- * Return menu information
- *
- * @author   Jelle De Loecker   <jelle@develry.be>
- * @since    0.0.1
- * @version  0.4.0
- */
-Classes.Alchemy.ApiController.setMethod(function menu(conduit) {
-
-	var data = conduit.body;
-
-	this.getModel('Menu').get(data.name, function done(err, result) {
-
-		if (err) {
-			return conduit.error(err);
-		}
-
-		conduit.end(result);
-	});
 });

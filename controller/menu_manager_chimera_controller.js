@@ -5,12 +5,10 @@ var MenuItemTypes = alchemy.shared('Menu.itemTypes');
  *
  * @author        Jelle De Loecker   <jelle@develry.be>
  * @since         0.2.0
- * @version       0.3.0
+ * @version       0.5.0
  */
-var Menu = Function.inherits('Alchemy.EditorChimeraController', function MenuManagerChimeraController(conduit, options) {
-
-	MenuManagerChimeraController.super.call(this, conduit, options);
-
+var Menu = Function.inherits('Alchemy.Controller.Chimera.Editor', function MenuManager(conduit, options) {
+	MenuManager.super.call(this, conduit, options);
 });
 
 /**
@@ -18,7 +16,7 @@ var Menu = Function.inherits('Alchemy.EditorChimeraController', function MenuMan
  *
  * @param   {Conduit}   conduit
  */
-Menu.setMethod(function edit(conduit) {
+Menu.setAction(function edit(conduit) {
 
 	var that = this,
 	    modelName = conduit.routeParam('subject'),
@@ -35,20 +33,20 @@ Menu.setMethod(function edit(conduit) {
 		types[key] = MenuItemTypes[key].prototype.title;
 	}
 
-	model.find('first', {conditions: {_id: alchemy.castObjectId(id)}}, function(err, items) {
+	model.find('first', {conditions: {_id: alchemy.castObjectId(id)}}, function(err, item) {
 
 		if (err) {
 			return conduit.error(err);
 		}
 
-		if (!items.length) {
+		if (!item) {
 			return conduit.notFound();
 		}
 
 		that.set('actions', that.getActions());
 		that.set('modelName', modelName);
 		that.set('pageTitle', modelName.humanize());
-		that.set('menuItem', items[0]);
+		that.set('menuItem', item);
 		that.set('menuTypes', types);
 		that.internal('modelName', modelName);
 		that.internal('recordId', id);
@@ -62,7 +60,7 @@ Menu.setMethod(function edit(conduit) {
  *
  * @param   {Conduit}   conduit
  */
-Menu.setMethod(function create_piece(conduit) {
+Menu.setAction(function create_piece(conduit) {
 
 	var that   = this,
 	    piece  = conduit.body.piece,
@@ -100,7 +98,7 @@ Menu.setMethod(function create_piece(conduit) {
  *
  * @param   {Conduit}   conduit
  */
-Menu.setMethod(function order_pieces(conduit) {
+Menu.setAction(function order_pieces(conduit) {
 
 	var ordered = conduit.body.ordered,
 	    tasks   = {},
@@ -156,7 +154,7 @@ Menu.setMethod(function order_pieces(conduit) {
  *
  * @param   {Conduit}   conduit
  */
-Menu.setMethod(function configure(conduit) {
+Menu.setAction(function configure(conduit) {
 
 	var that = this,
 	    modelName = conduit.routeParam('subject'),
@@ -167,7 +165,7 @@ Menu.setMethod(function configure(conduit) {
 	var actionFields = chimera.getActionFields('edit'),
 	    groups = actionFields.groups.clone();
 
-	model.find('first', {conditions: {_id: alchemy.castObjectId(id)}}, function(err, items) {
+	model.find('first', {conditions: {_id: alchemy.castObjectId(id)}}, function(err, item) {
 
 		if (err) {
 			return conduit.error(err);
@@ -177,7 +175,7 @@ Menu.setMethod(function configure(conduit) {
 			return conduit.notFound();
 		}
 
-		actionFields.processRecords(model, items, function groupedRecords(err, groups) {
+		actionFields.processRecords(model, [items], function groupedRecords(err, groups) {
 
 			if (err) {
 				return conduit.error(err);
@@ -195,7 +193,7 @@ Menu.setMethod(function configure(conduit) {
 	});
 });
 
-Menu.setMethod(function save_piece(conduit) {
+Menu.setAction(function save_piece(conduit) {
 
 	var that = this,
 	    actionFields,

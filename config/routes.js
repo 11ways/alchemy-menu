@@ -1,0 +1,1 @@
+Router.post('Menu#getMenu', '/api/menu/getMenu');

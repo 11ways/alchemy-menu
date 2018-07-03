@@ -45,7 +45,7 @@ alchemy.plugins.menu.getDefault = function getDefault(name, callback) {
 	alchemy.ready(function onReady() {
 
 		// Get the actual menu
-		var menu = Classes.Alchemy.MenuModel.getDefault(name);
+		var menu = Classes.Alchemy.Model.Menu.getDefault(name);
 
 		callback(null, menu);
 	});
