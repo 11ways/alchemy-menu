@@ -57,7 +57,11 @@ alchemy.ready(function preloadMenus() {
 
 	Menu.find('all', {document: false}, function allMenus(err, results) {
 
-		var children,
+		if (err) {
+			throw err;
+		}
+
+		let children,
 		    entry,
 		    temp,
 		    c,
