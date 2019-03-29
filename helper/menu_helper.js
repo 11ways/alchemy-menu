@@ -37,9 +37,10 @@ Menu.setMethod(function printPosition(name, options) {
  */
 Menu.setMethod(function get(name, options) {
 
-	var that = this;
+	var that = this,
+	    placeholder;
 
-	this.view.async(function getMenu(next) {
+	placeholder = this.view.async(function getMenu(next) {
 		that.view.helpers.Alchemy.getResource({name: 'Menu#getMenu', params: {action: 'menu'}, body: {name: name}}, function gotResult(err, menu) {
 
 			var placeholder;
@@ -53,4 +54,6 @@ Menu.setMethod(function get(name, options) {
 			placeholder.getContent(next);
 		});
 	});
+
+	placeholder.from_menu = true;
 });
