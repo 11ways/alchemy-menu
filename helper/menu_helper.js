@@ -51,7 +51,7 @@ Menu.setMethod(function get(name, options) {
 
 			placeholder = that.view.print_element('menu/wrapper', {menu: menu});
 
-			placeholder.getContent(next);
+			placeholder.renderHawkejsContent().done(next);
 		});
 	});
 
