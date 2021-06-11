@@ -11,6 +11,10 @@ var Menu = Function.inherits('Alchemy.Controller.Chimera.Editor', function MenuM
 	MenuManager.super.call(this, conduit, options);
 });
 
+if (!Menu.setAction) {
+	return;
+}
+
 /**
  * The edit action
  *

@@ -1,3 +1,7 @@
+## 0.6.1 (2021-06-11)
+
+* Small `he-placeholder` fix for newer Hawkejs versions
+
 ## 0.6.0 (2020-07-21)
 
 * Make compatible with Alchemy v1.1.0
