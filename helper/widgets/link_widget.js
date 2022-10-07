@@ -4,8 +4,8 @@
  * @constructor
  *
  * @author   Jelle De Loecker <jelle@elevenways.be>
- * @since    0.1.0
- * @version  0.1.0
+ * @since    0.6.1
+ * @version  0.6.1
  *
  * @param    {Object}   data
  */
@@ -15,8 +15,8 @@ const Link = Function.inherits('Alchemy.Widget', 'Link');
  * Prepare the schema
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
- * @since    0.1.0
- * @version  0.1.0
+ * @since    0.6.1
+ * @version  0.6.1
  */
 Link.constitute(function prepareSchema() {
 
@@ -39,7 +39,10 @@ Link.constitute(function prepareSchema() {
 		// }
 	}
 
-	this.schema.addField('route', 'Enum', {values: routes});
+	this.schema.addField('route', 'Enum', {
+		values                 : routes,
+		widget_config_editable : true,
+	});
 
 	let params = this.createSchema();
 	params.addField('name', 'String');
@@ -54,8 +57,8 @@ Link.constitute(function prepareSchema() {
  * Populate the widget
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
- * @since    0.1.0
- * @version  0.1.0
+ * @since    0.6.1
+ * @version  0.6.2
  *
  * @param    {HTMLElement}   widget
  */
@@ -80,12 +83,17 @@ Link.setMethod(function populateWidget() {
 			}
 		}
 
-		href = alchemy.routeUrl(this.config.route, parameters);
+		this.hawkejs_renderer.helpers.Router.applyDirective(anchor, this.config.route, {
+			parameters : parameters,
+		});
+
 	} else {
 		href = '#';
 	}
 
-	anchor.setAttribute('href', href);
+	if (href) {
+		anchor.setAttribute('href', href);
+	}
 
 	if (this.config.content) {
 		anchor.textContent = this.config.content;
@@ -98,8 +106,8 @@ Link.setMethod(function populateWidget() {
  * Things to do when the widget is being edited
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
- * @since    0.1.0
- * @version  0.1.0
+ * @since    0.6.1
+ * @version  0.6.1
  *
  * @param    {HTMLElement}   widget
  */

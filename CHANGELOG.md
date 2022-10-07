@@ -1,3 +1,7 @@
+## 0.6.2 (WIP)
+
+* Use Router directive to set populate Link widget anchors
+
 ## 0.6.1 (2021-06-11)
 
 * Small `he-placeholder` fix for newer Hawkejs versions

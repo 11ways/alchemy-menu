@@ -1,7 +1,7 @@
 {
 	"name": "alchemy-menu",
 	"description": "Menu plugin for Alchemy MVC",
-	"version": "0.6.1",
+	"version": "0.6.2-alpha",
 	"author": "Jelle De Loecker <jelle@elevenways.be>",
 	"keywords": [
 		"alchemy",
@@ -10,14 +10,14 @@
 		"menu"
 	],
 	"peerDependencies": {
-		"alchemymvc": "~1.1.0"
+		"alchemymvc" : ">=1.2.0"
 	},
 	"repository": {
-		"type": "git",
-		"url": "https://github.com/skerit/alchemy-menu.git"
+		"type" : "git",
+		"url"  : "https://github.com/skerit/alchemy-menu.git"
 	},
 	"license": "MIT",
 	"engines": {
-		"node": ">=8.9.0"
+		"node" : ">=14.0.0"
 	}
 }
