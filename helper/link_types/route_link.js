@@ -61,15 +61,15 @@ RouteLink.setMethod(function populateWidget(anchor, widget) {
 
 	let parameters = {};
 
-	if (Array.isArray(this.config.parameters)) {
+	if (Array.isArray(this.settings.parameters)) {
 		let entry;
 
-		for (entry of this.config.parameters) {
+		for (entry of this.settings.parameters) {
 			parameters[entry.name] = entry.value;
 		}
 	}
 
-	this.hawkejs_renderer.helpers.Router.applyDirective(anchor, this.config.route, {
+	widget.hawkejs_renderer.helpers.Router.applyDirective(anchor, this.settings.route, {
 		parameters : parameters,
 	});
 	
