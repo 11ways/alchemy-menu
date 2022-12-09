@@ -6,8 +6,6 @@
  * @author   Jelle De Loecker <jelle@elevenways.be>
  * @since    0.6.1
  * @version  0.6.1
- *
- * @param    {Object}   data
  */
 const Link = Function.inherits('Alchemy.Widget', 'Link');
 
@@ -16,41 +14,51 @@ const Link = Function.inherits('Alchemy.Widget', 'Link');
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.1
+ * @version  0.6.2
  */
 Link.constitute(function prepareSchema() {
 
-	this.schema.addField('href', 'String');
+	// The type of link
+	this.schema.addField('link_type', 'Enum', {
+		description            : 'The type of link',
+		widget_config_editable : true,
+		values : Classes.Alchemy.Menu.Link.Link.getDescendantsDict(),
+	});
 
-	let routes;
+	// The link settings
+	this.schema.addField('link_settings', 'Schema', {
+		description            : 'The settings of this link type',
+		widget_config_editable : true,
+		schema                 : 'link_type',
+	});
 
-	if (Blast.isNode) {
-		routes = Router.routes.getDict();
-	} else {
-
-		routes = {};
-
-		// for (let root in hawkejs.scene.exposed.routes) {
-		// 	let section = hawkejs.scene.exposed.routes[root];
-
-		// 	for (let key in section) {
-		// 		routes[key] = section[key];
-		// 	}
-		// }
-	}
-
-	this.schema.addField('route', 'Enum', {
-		values                 : routes,
+	// The title of the link (as in tooltip)
+	this.schema.addField('title', 'String', {
+		description            : 'The title (tooltip) of the link',
 		widget_config_editable : true,
 	});
 
-	let params = this.createSchema();
-	params.addField('name', 'String');
-	params.addField('value', 'String');
+	// The text content of the link
+	this.schema.addField('text', 'String', {
+		description            : 'The text content of the link',
+		widget_config_editable : true,
+	});
 
-	this.schema.addField('parameters', params, {array: true});
+	this.schema.addField('target_language', 'String', {
+		description            : 'What is the language of the page being linked? (Optional)',
+		widget_config_editable : true,
+	});
 
-	this.schema.addField('content', 'String', {translatable: true});
+	this.schema.addField('target', 'Enum', {
+		widget_config_editable : true,
+		description: 'The way the link opens',
+		values : {
+			'_self'    : Classes.Alchemy.Microcopy('link.target_self'),
+			'_blank'   : Classes.Alchemy.Microcopy('link.target_window'),
+			'_parent'  : Classes.Alchemy.Microcopy('link.target_parent'),
+			'_top'     : Classes.Alchemy.Microcopy('link.target_top'),
+		}
+	});
 });
 
 /**
@@ -66,38 +74,41 @@ Link.setMethod(function populateWidget() {
 
 	populateWidget.super.call(this);
 
-	let anchor = this.createElement('a'),
-	    href;
+	const link_type = this.config.link_type;
 
-	if (this.config.href) {
-		href = this.config.href;
-	} else if (this.config.route) {
-
-		let parameters = {};
-
-		if (Array.isArray(this.config.parameters)) {
-			let entry;
-
-			for (entry of this.config.parameters) {
-				parameters[entry.name] = entry.value;
-			}
-		}
-
-		this.hawkejs_renderer.helpers.Router.applyDirective(anchor, this.config.route, {
-			parameters : parameters,
-		});
-
-	} else {
-		href = '#';
+	if (!link_type) {
+		return;
 	}
 
-	if (href) {
-		anchor.setAttribute('href', href);
+	let link_constructor = Classes.Alchemy.Menu.Link.Link.getDescendant(link_type);
+
+	if (!link_constructor) {
+		throw new Error('Failed to find the Link constructor "' + link_type + '"');
 	}
 
-	if (this.config.content) {
-		anchor.textContent = this.config.content;
+	let link = new link_constructor(this.config.link_settings);
+
+	let anchor = this.createElement('a');
+
+	link.populateWidget(anchor, this);
+
+	if (this.config.text) {
+		anchor.textContent = this.config.text;
 	}
+
+	if (this.config.title) {
+		anchor.setAttribute('title', this.config.title);
+	}
+
+	if (this.config.target_language) {
+		anchor.setAttribute('hreflang', this.config.target_language);
+	}
+
+	if (this.config.target) {
+		anchor.setAttribute('target', this.config.target);
+	}
+
+	this.widget.classList.add('js-he-link-wrapper');
 
 	this.widget.append(anchor);
 });

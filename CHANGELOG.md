@@ -2,6 +2,7 @@
 
 * Use Router directive to set populate Link widget anchors
 * Add the `Alchemy.Menu.Link.Link` class
+* Use the new `Link` class in the `Link` widgets
 
 ## 0.6.1 (2021-06-11)
 
