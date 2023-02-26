@@ -1,4 +1,4 @@
-## 0.6.3 (WIP)
+## 0.6.3 (2023-02-26)
 
 * Make the `Route` widget link type fully functional
 * Allow `Route` widgets to have extra content in the form of segments
