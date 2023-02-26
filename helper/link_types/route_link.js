@@ -1,3 +1,23 @@
+const ROUTES_PROVIDER = new Classes.Develry.BackedMap(() => {
+	let routes;
+
+	if (Blast.isNode) {
+		routes = Router.routes.getDict();
+	} else {
+		routes = {};
+
+		for (let root in hawkejs.scene.exposed.routes) {
+			let section = hawkejs.scene.exposed.routes[root];
+
+			for (let key in section) {
+				routes[key] = section[key];
+			}
+		}
+	}
+
+	return routes;
+});
+
 /**
  * The Route link class
  *
@@ -14,37 +34,24 @@ const RouteLink = Function.inherits('Alchemy.Menu.Link', 'Route');
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.2
+ * @version  0.6.3
  */
 RouteLink.constitute(function setSchema() {
 
-	let routes;
-
-	if (Blast.isNode) {
-		routes = Router.routes.getDict();
-	} else {
-
-		routes = {};
-
-		// for (let root in hawkejs.scene.exposed.routes) {
-		// 	let section = hawkejs.scene.exposed.routes[root];
-
-		// 	for (let key in section) {
-		// 		routes[key] = section[key];
-		// 	}
-		// }
-	}
-
 	this.schema.addField('route', 'Enum', {
-		values                 : routes,
+		values                 : ROUTES_PROVIDER,
 		widget_config_editable : true,
+	});
+
+	this.schema.addField('parameters', 'Schema', {
+		schema : 'route',
 	});
 
 	let params = alchemy.createSchema();
 	params.addField('name', 'String');
 	params.addField('value', 'String');
 
-	this.schema.addField('parameters', params, {array: true});
+	this.schema.addField('parameter_overrides', params, {array: true});
 });
 
 /**
@@ -52,24 +59,74 @@ RouteLink.constitute(function setSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.2
+ * @version  0.6.3
  *
  * @param    {HTMLAnchorElement}   anchor
  * @param    {Alchemy.Widget.Link} widget
  */
-RouteLink.setMethod(function populateWidget(anchor, widget) {
+RouteLink.setMethod(async function populateWidget(anchor, widget) {
+
+	const route_name = this.settings?.route;
+
+	if (!route_name) {
+		return;
+	}
+
+	let route = ROUTES_PROVIDER.get(route_name);
+
+	if (!route) {
+		return;
+	}
 
 	let parameters = {};
 
-	if (Array.isArray(this.settings.parameters)) {
+	let schema = route.schema || route.value.schema;
+
+	if (schema) {
+
+		let field;
+
+		for (field of schema) {
+
+			if (field?.options?.alias) {
+
+				if (parameters[field.options.alias]) {
+					continue;
+				}
+
+				let record;
+
+				if (Blast.isNode) {
+					const model = this.getModel(field.options.model_name);
+					record = await model.findByPk(this.settings.parameters[field.name]);
+				} else {
+					record = await alchemy.fetch('Menu#getRouteDocument', {
+						parameters: {
+							route : route_name,
+							model : field.options.model_name,
+							pk    : this.settings.parameters[field.name],
+						}
+					});
+				}
+
+				if (record) {
+					parameters[field.options.alias] = record;
+				}
+			} else {
+				parameters[field.name] = this.settings.parameters[field.name];
+			}
+		}
+	}
+
+	if (Array.isArray(this.settings.parameter_overrides)) {
 		let entry;
 
-		for (entry of this.settings.parameters) {
+		for (entry of this.settings.parameter_overrides) {
 			parameters[entry.name] = entry.value;
 		}
 	}
 
-	widget.hawkejs_renderer.helpers.Router.applyDirective(anchor, this.settings.route, {
+	widget.hawkejs_renderer.helpers.Router.applyDirective(anchor, route_name, {
 		parameters : parameters,
 	});
 	

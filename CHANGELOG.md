@@ -1,5 +1,7 @@
 ## 0.6.3 (WIP)
 
+* Make the `Route` widget link type fully functional
+
 ## 0.6.2 (2022-12-23)
 
 * Use Router directive to set populate Link widget anchors

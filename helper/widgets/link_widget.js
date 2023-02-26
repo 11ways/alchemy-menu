@@ -66,7 +66,7 @@ Link.constitute(function prepareSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.2
+ * @version  0.6.3
  *
  * @param    {HTMLElement}   widget
  */
@@ -87,6 +87,10 @@ Link.setMethod(function populateWidget() {
 	}
 
 	let link = new link_constructor(this.config.link_settings);
+
+	if (this.conduit) {
+		link.conduit = this.conduit;
+	}
 
 	let anchor = this.createElement('a');
 
