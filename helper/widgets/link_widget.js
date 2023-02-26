@@ -1,3 +1,23 @@
+const ROUTES_PROVIDER = new Classes.Develry.BackedMap(() => {
+	let routes;
+
+	if (Blast.isNode) {
+		routes = Router.routes.getDict();
+	} else {
+		routes = {};
+
+		for (let root in hawkejs.scene.exposed.routes) {
+			let section = hawkejs.scene.exposed.routes[root];
+
+			for (let key in section) {
+				routes[key] = section[key];
+			}
+		}
+	}
+
+	return routes;
+});
+
 /**
  * The Widget Link class
  *
@@ -14,7 +34,7 @@ const Link = Function.inherits('Alchemy.Widget', 'Link');
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.2
+ * @version  0.6.3
  */
 Link.constitute(function prepareSchema() {
 
@@ -42,6 +62,12 @@ Link.constitute(function prepareSchema() {
 	this.schema.addField('text', 'String', {
 		description            : 'The text content of the link',
 		widget_config_editable : true,
+	});
+
+	this.schema.addField('extra_content', 'Enum', {
+		widget_config_editable : true,
+		description : 'Optional extra content to add to this link (like badges)',
+		values      : ROUTES_PROVIDER,
 	});
 
 	this.schema.addField('target_language', 'String', {
@@ -115,6 +141,29 @@ Link.setMethod(function populateWidget() {
 	this.widget.classList.add('js-he-link-wrapper');
 
 	this.widget.append(anchor);
+
+	if (this.config.extra_content) {
+
+		let renderer = this.widget?.hawkejs_renderer || this.conduit?.renderer;
+
+		if (!renderer && Blast.isBrowser) {
+			renderer = hawkejs.scene.general_renderer;
+		}
+
+		if (!renderer) {
+			return;
+		}
+
+		let placeholder = renderer.helpers.Alchemy.segment({
+			print : false,
+			name  : this.config.extra_content,
+		}, {
+			link_settings: this.config.link_settings,
+		});
+
+		anchor.append(placeholder);
+		anchor.classList.add('al-has-extra-content');
+	}
 });
 
 /**
