@@ -92,7 +92,7 @@ Link.constitute(function prepareSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.3
+ * @version  0.6.4
  *
  * @param    {HTMLElement}   widget
  */
@@ -118,12 +118,19 @@ Link.setMethod(function populateWidget() {
 		link.conduit = this.conduit;
 	}
 
-	let anchor = this.createElement('a');
+	let anchor = this.createElement('a'),
+	    div = this.createElement('div');
+	
+	div.classList.add('al-link-content');
+	anchor.append(div);
 
 	link.populateWidget(anchor, this);
 
 	if (this.config.text) {
-		anchor.textContent = this.config.text;
+		let span = this.createElement('span');
+		span.classList.add('al-link-text');
+		span.textContent = this.config.text;
+		div.append(span);
 	}
 
 	if (this.config.title) {
@@ -161,7 +168,7 @@ Link.setMethod(function populateWidget() {
 			link_settings: this.config.link_settings,
 		});
 
-		anchor.append(placeholder);
+		div.append(placeholder);
 		anchor.classList.add('al-has-extra-content');
 	}
 });

@@ -1,5 +1,6 @@
 ## 0.6.4 (WIP)
 
+* Add more wrappers to the content of a `Link` widget
 
 ## 0.6.3 (2023-02-26)
 
