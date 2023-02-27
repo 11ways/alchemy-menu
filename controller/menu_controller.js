@@ -71,8 +71,6 @@ Menu.setAction(async function getRouteDocument(conduit) {
 	for (key in route.param_definitions) {
 		definition = route.param_definitions[key];
 
-		console.log('DEF', definition, doc)
-
 		if (!definition.is_model_type) {
 			continue;
 		}
