@@ -1,4 +1,4 @@
-## 0.6.4 (WIP)
+## 0.6.4 (2023-03-02)
 
 * Add more wrappers to the content of a `Link` widget
 * Use the new `alchemy.getRoutes()` method
