@@ -1,22 +1,4 @@
-const ROUTES_PROVIDER = new Classes.Develry.BackedMap(() => {
-	let routes;
-
-	if (Blast.isNode) {
-		routes = Router.routes.getDict();
-	} else {
-		routes = {};
-
-		for (let root in hawkejs.scene.exposed.routes) {
-			let section = hawkejs.scene.exposed.routes[root];
-
-			for (let key in section) {
-				routes[key] = section[key];
-			}
-		}
-	}
-
-	return routes;
-});
+const ROUTES_PROVIDER = alchemy.getRoutes();
 
 /**
  * The Widget Link class
@@ -34,7 +16,7 @@ const Link = Function.inherits('Alchemy.Widget', 'Link');
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.3
+ * @version  0.6.4
  */
 Link.constitute(function prepareSchema() {
 
@@ -42,7 +24,7 @@ Link.constitute(function prepareSchema() {
 	this.schema.addField('link_type', 'Enum', {
 		description            : 'The type of link',
 		widget_config_editable : true,
-		values : Classes.Alchemy.Menu.Link.Link.getDescendantsDict(),
+		values : Classes.Alchemy.Menu.Link.Link.getLiveDescendantsMap(),
 	});
 
 	// The link settings

@@ -1,22 +1,4 @@
-const ROUTES_PROVIDER = new Classes.Develry.BackedMap(() => {
-	let routes;
-
-	if (Blast.isNode) {
-		routes = Router.routes.getDict();
-	} else {
-		routes = {};
-
-		for (let root in hawkejs.scene.exposed.routes) {
-			let section = hawkejs.scene.exposed.routes[root];
-
-			for (let key in section) {
-				routes[key] = section[key];
-			}
-		}
-	}
-
-	return routes;
-});
+const ROUTES_PROVIDER = alchemy.getRoutes();
 
 /**
  * The Route link class
@@ -59,7 +41,7 @@ RouteLink.constitute(function setSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.3
+ * @version  0.6.4
  *
  * @param    {HTMLAnchorElement}   anchor
  * @param    {Alchemy.Widget.Link} widget
@@ -81,6 +63,16 @@ RouteLink.setMethod(async function populateWidget(anchor, widget) {
 	let parameters = {};
 
 	let schema = route.schema || route.value.schema;
+
+	if (Array.isArray(this.settings.parameters)) {
+		let entry;
+
+		for (entry of this.settings.parameters) {
+			parameters[entry.name] = entry.value;
+		}
+	}
+
+	let breadcrumb;
 
 	if (schema) {
 
@@ -111,8 +103,9 @@ RouteLink.setMethod(async function populateWidget(anchor, widget) {
 
 				if (record) {
 					parameters[field.options.alias] = record;
+					breadcrumb = record.breadcrumb;
 				}
-			} else {
+			} else if (this.settings.parameters[field.name]) {
 				parameters[field.name] = this.settings.parameters[field.name];
 			}
 		}
@@ -128,6 +121,6 @@ RouteLink.setMethod(async function populateWidget(anchor, widget) {
 
 	widget.hawkejs_renderer.helpers.Router.applyDirective(anchor, route_name, {
 		parameters : parameters,
+		breadcrumb : breadcrumb,
 	});
-	
 });
