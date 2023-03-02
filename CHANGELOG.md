@@ -2,6 +2,7 @@
 
 * Add more wrappers to the content of a `Link` widget
 * Use the new `alchemy.getRoutes()` method
+* Also expose the `breadcrumb` property of documents for the route link type
 
 ## 0.6.3 (2023-02-26)
 

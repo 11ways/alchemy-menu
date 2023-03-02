@@ -38,7 +38,7 @@ Menu.setAction(function getMenu(conduit) {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.3
- * @version  0.6.3
+ * @version  0.6.4
  */
 Menu.setAction(async function getRouteDocument(conduit) {
 
@@ -81,6 +81,12 @@ Menu.setAction(async function getRouteDocument(conduit) {
 			result[definition.name] = doc_value;
 			result[definition.type_field_name] = doc_value;
 		}
+	}
+
+	let breadcrumb = model.getField('breadcrumb');
+
+	if (breadcrumb && !breadcrumb.is_private) {
+		result.breadcrumb = doc.breadcrumb;
 	}
 
 	conduit.end(result);
