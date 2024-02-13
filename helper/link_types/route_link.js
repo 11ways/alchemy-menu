@@ -41,7 +41,7 @@ RouteLink.constitute(function setSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.4
+ * @version  0.6.5
  *
  * @param    {HTMLAnchorElement}   anchor
  * @param    {Alchemy.Widget.Link} widget
@@ -62,7 +62,7 @@ RouteLink.setMethod(async function populateWidget(anchor, widget) {
 
 	let parameters = {};
 
-	let schema = route.schema || route.value.schema;
+	let schema = route.schema || route.value?.schema;
 
 	if (Array.isArray(this.settings.parameters)) {
 		let entry;

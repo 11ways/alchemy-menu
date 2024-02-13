@@ -1,3 +1,7 @@
+## 0.6.5 (WIP)
+
+* Allow the use of `Microcopy` instances in the link widget
+
 ## 0.6.4 (2023-03-02)
 
 * Add more wrappers to the content of a `Link` widget

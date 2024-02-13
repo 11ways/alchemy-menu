@@ -74,7 +74,7 @@ Link.constitute(function prepareSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.4
+ * @version  0.6.5
  *
  * @param    {HTMLElement}   widget
  */
@@ -111,7 +111,13 @@ Link.setMethod(function populateWidget() {
 	if (this.config.text) {
 		let span = this.createElement('span');
 		span.classList.add('al-link-text');
-		span.textContent = this.config.text;
+
+		if (this.config.text instanceof Classes.Alchemy.Microcopy) {
+			span.append(this.config.text.toElement());
+		} else {
+			span.textContent = this.config.text;
+		}
+
 		div.append(span);
 	}
 
