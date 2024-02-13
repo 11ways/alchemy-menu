@@ -1,37 +1,6 @@
-var linkmap = alchemy.shared('Connection.map'),
+let linkmap = alchemy.shared('Connection.map'),
     options,
     menus;
-
-// Define the default menu options
-options = {
-
-	// The wrapper
-	wrap: {
-		element: 'nav',
-		class: 'navbar',
-		attributes: {}
-	},
-
-	// The main
-	main: {
-		element: 'ul',
-		class: 'nav',
-		attributes: {}
-	},
-
-	// The anchor wrapper
-	anchorWrap: {
-		element: 'li'
-	},
-
-	// The anchor
-	anchor: {
-		element: 'a'
-	}
-};
-
-// Inject the user-overridden options
-alchemy.plugins.menu = Object.assign(options, alchemy.plugins.menu);
 
 /**
  * Get the default menu object
@@ -45,7 +14,7 @@ alchemy.plugins.menu.getDefault = function getDefault(name, callback) {
 	alchemy.ready(function onReady() {
 
 		// Get the actual menu
-		var menu = Classes.Alchemy.Model.Menu.getDefault(name);
+		let menu = Classes.Alchemy.Model.Menu.getDefault(name);
 
 		callback(null, menu);
 	});
