@@ -74,17 +74,16 @@ Link.constitute(function prepareSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.1
- * @version  0.6.5
+ * @version  0.6.6
  *
  * @param    {HTMLElement}   widget
  */
 Link.setMethod(function populateWidget() {
 
-	populateWidget.super.call(this);
-
 	const link_type = this.config.link_type;
 
 	if (!link_type) {
+		populateWidget.super.call(this);
 		return;
 	}
 
@@ -136,6 +135,8 @@ Link.setMethod(function populateWidget() {
 	this.widget.classList.add('js-he-link-wrapper');
 
 	this.widget.append(anchor);
+
+	populateWidget.super.call(this);
 
 	if (this.config.extra_content) {
 

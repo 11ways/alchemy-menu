@@ -1,3 +1,7 @@
+## 0.6.6 (WIP)
+
+* Make link widgets call super populateWidget method after adding contents
+
 ## 0.6.5 (2024-02-13)
 
 * Allow the use of `Microcopy` instances in the link widget
