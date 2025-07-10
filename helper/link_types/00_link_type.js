@@ -52,12 +52,16 @@ LinkType.setProperty(function schema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.2
+ * @version  0.6.6
  */
 LinkType.constitute(function setSchema() {
 	// Create a new schema
 	let schema = alchemy.createSchema();
 	this.schema = schema;
+
+	this.schema.addField('target', 'String', {
+		description: 'The target attribute value',
+	});
 });
 
 /**

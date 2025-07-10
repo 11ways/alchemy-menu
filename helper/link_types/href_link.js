@@ -25,7 +25,6 @@ HrefLink.constitute(function setSchema() {
 	this.schema.addField('breadcrumb', 'String', {
 		description: 'The breadcrumb in case it\'s a local link',
 	});
-
 });
 
 /**
@@ -33,7 +32,7 @@ HrefLink.constitute(function setSchema() {
  *
  * @author   Jelle De Loecker   <jelle@elevenways.be>
  * @since    0.6.2
- * @version  0.6.2
+ * @version  0.6.6
  *
  * @param    {HTMLAnchorElement}   anchor
  * @param    {Alchemy.Widget.Link} widget
@@ -43,5 +42,9 @@ HrefLink.setMethod(function populateWidget(anchor, widget) {
 
 	if (this.settings.breadcrumb) {
 		anchor.setAttribute('data-breadcrumb', this.settings.breadcrumb);
+	}
+
+	if (this.settings.target) {
+		anchor.setAttribute('target', this.settings.target);
 	}
 });
