@@ -1,4 +1,4 @@
-## 0.6.6 (WIP)
+## 0.6.6 (2025-07-10)
 
 * Make link widgets call super populateWidget method after adding contents
 * Add `target` setting to link types

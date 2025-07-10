@@ -1,7 +1,7 @@
 {
 	"name": "alchemy-menu",
 	"description": "Menu plugin for Alchemy MVC",
-	"version": "0.6.5",
+	"version": "0.6.6",
 	"author": "Jelle De Loecker <jelle@elevenways.be>",
 	"keywords": [
 		"alchemy",
